@@ -38,8 +38,10 @@ type
     function SendText(TheTextSource: string; Text: string): Integer;
     function GetScreenBy(AScreenType: string; ScreenID: Integer): TLedScreen;
     function GetNewScreenID(AScreenType: string): Integer;
-    procedure LoadFrom(AIniOptions: TIniOptions; TheScreenType: string);
+    procedure LoadFrom(AIniOptions: TIniOptions);
+    procedure SaveTo(AIniOptions: TIniOptions);
 
+    
     property Screens[Index: Integer]: TLedScreen read GetScreens;
     property ScreenCount: Integer read GetScreenCount;
     property ScreenNames: THashedStringList read FScreens;
@@ -88,7 +90,6 @@ type
     procedure ClearWindow;
     //让Led显示屏显示内容
     function ShowText(WindowID: Integer; AText: string): Integer;
-    class function LoadFrom(AKVList: TStrings): TLedScreen;
     function SaveTo: TStrings; virtual; abstract;
 
     property ScreenType: string read FScreenType write SetScreenType;
@@ -172,7 +173,7 @@ type
 
 implementation
 
-uses LSNScreen, LSNWindow;
+uses LSNScreen, LSNWindow, CPScreen, CPWindow;
 
 { TLedScreen }
 
@@ -241,31 +242,6 @@ begin
   else
   begin
     Result := nil;
-  end;
-end;
-
-class function TLedScreen.LoadFrom(AKVList: TStrings): TLedScreen;
-begin
-  Result := nil;
-  if AKVList.Values['ScreenType'] = 'LSN' then
-  begin
-    Result := TLSNScreen.Create;
-    Result.ID := StrToInt(AKVList.Values['ID']);
-    Result.Width := StrToInt(AKVList.Values['Width']);
-    Result.Heigth := StrToInt(AKVList.Values['Heigth']);
-    Result.IsSendByNet := StrToBool(AKVList.Values['IsSendByNet']);
-    Result.IP := AKVList.Values['IP'];
-    Result.Port := StrToInt(AKVList.Values['Port']);
-    Result.IDCode := StrToInt(AKVList.Values['IDCode']);
-    Result.ComNO := StrToInt(AKVList.Values['ComNO']);
-    Result.Baudrate := StrToInt(AKVList.Values['Baudrate']);
-    TLSNScreen(Result).ColorStyle := StrToInt(AKVList.Values['ColorStyle']);
-    TLSNScreen(Result).ModeStyle := StrToInt(AKVList.Values['ModeStyle']);
-    TLSNScreen(Result).TimerON := StrToBool(AKVList.Values['TimerON']);
-    TLSNScreen(Result).TemperatureON := StrToBool(AKVList.Values['TemperatureON']);
-    TLSNScreen(Result).MainON := StrToBool(AKVList.Values['MainON']);
-    TLSNScreen(Result).TitleON := StrToBool(AKVList.Values['TitleON']);
-    TLSNScreen(Result).TitleStyle := StrToInt(AKVList.Values['TitleStyle']);
   end;
 end;
 
@@ -404,7 +380,6 @@ begin
   Result.RunSpeed := StrToInt(AKVList.Values['RunSpeed']);
   Result.StayTime := StrToInt(AKVList.Values['StayTime']);
   Result.Alignment := StrToInt(AKVList.Values['Alignment']);
-  TLSNWindow(Result).AddStyle := StrToInt(AKVList.Values['AddStyle']);
 end;
 
 procedure TLedWindow.SetAlignment(const Value: Integer);
@@ -494,7 +469,8 @@ begin
   begin   
     aKey := aKey + ':Com' + IntToStr(AScreen.ComNO)
       + ':' + IntToStr(AScreen.Baudrate);
-  end; }
+  end;
+  }
   aKey := aKey + IntToStr(AScreen.ID);
   FScreens.AddObject(aKey, AScreen);
 end;
@@ -539,8 +515,18 @@ begin
 end;
 
 function TLedManager.GetNewScreenID(AScreenType: string): Integer;
+var
+  i: Integer;
 begin
+  Result := 1;
   { TODO : 考虑不同通讯但相同屏号 }
+  for i := 0 to FScreens.Count - 1 do
+  begin
+    if Screens[i].ScreenType = AScreenType then
+    begin
+      Inc(Result);
+    end;
+  end;
   Result := FScreens.Count + 1;
 end;
 
@@ -549,10 +535,10 @@ function TLedManager.GetScreenBy(AScreenType: string;
 var
   index: Integer;
 begin
-{ TODO : 考虑不同通讯但相同屏号 }      
-  if ScreenCount > 0 then
+{ TODO : 考虑不同通讯但相同屏号 }
+  index := FScreens.IndexOf(AScreenType + IntToStr(ScreenID));
+  if index >= 0 then
   begin
-    index := FScreens.IndexOf(AScreenType + IntToStr(ScreenID));
     Result := FScreens.Objects[index] as TLedScreen;
   end
   else
@@ -579,7 +565,7 @@ begin
   end;
 end;
 
-procedure TLedManager.LoadFrom(AIniOptions: TIniOptions; TheScreenType: string);
+procedure TLedManager.LoadFrom(AIniOptions: TIniOptions);
 var
   i, aScreenID: Integer;
   aScreenType: string;
@@ -591,10 +577,15 @@ begin
   //加载显示屏参数
   For i :=0 to AIniOptions.ScreenCount - 1 do
   begin
-    aKVList := AIniOptions.Screens[i];
-    if aKVList.Values['ScreenType'] = TheScreenType then
+    aKVList := AIniOptions.Screens[i];   
+    aScreenType := aKVList.Values['ScreenType'];
+    if aScreenType = 'LSN' then
     begin
-      AddScreen(TLedScreen.LoadFrom(aKVList));
+      AddScreen(TLSNScreen.LoadFrom(aKVList));
+    end
+    else
+    begin
+      AddScreen(TCPScreen.LoadFrom(aKVList));
     end;
   end;
   //加载显示屏上的窗口参数
@@ -604,12 +595,39 @@ begin
     aScreenID := StrToInt(aKVList.Values['ScreenID']);
     aScreenType := aKVList.Values['ScreenType'];
     aScreen := GetScreenBy(aScreenType, aScreenID);
-    if aScreenType = TheScreenType then
+    if aScreenType = 'LSN' then
     begin
-      aScreen.AddWindow(TLedWindow.LoadFrom(aKVList));
+      aScreen.AddWindow(TLSNWindow.LoadFrom(aKVList));
+    end
+    else
+    begin
+      aScreen.AddWindow(TCPWindow.LoadFrom(aKVList));
     end;
   end;
 
+end;
+
+procedure TLedManager.SaveTo(AIniOptions: TIniOptions);
+var
+  i, j: Integer;    
+  tmpKVList: TStrings;   
+  tmpScreen: TLedScreen;
+  tmpWindow: TLedWindow;
+begin
+
+  for i := 0 to ScreenCount - 1 do
+  begin
+    tmpScreen := Screens[i];
+    tmpKVList := tmpScreen.SaveTo;
+    AIniOptions.AddScreens(tmpKVList);
+
+    for j := 0 to tmpScreen.WindowCount - 1 do
+    begin
+      tmpWindow := tmpScreen.Windows[j];
+      tmpKVList := tmpWindow.SaveTo;
+      AIniOptions.AddWindows(tmpKVList);
+    end;
+  end;
 end;
 
 function TLedManager.SendText(TheTextSource, Text: string): Integer;

@@ -12,6 +12,7 @@ uses
 
 const
   DefaultTimeOut = 600;
+  CPScreenType = 'CP2500';
 
 type
 { TCPScreen }
@@ -31,7 +32,8 @@ type
 
     function InitComm: Integer; override;
     function FreeComm: Integer; override;
-    function SaveTo: TStrings; override;
+    function SaveTo: TStrings; override;   
+    class function LoadFrom(AKVList: TStrings): TCPScreen;
 
     property Timeout: Integer read FTimeout write SetTimeout;
   end;
@@ -80,6 +82,22 @@ begin
     Result := Result
       + (-CP5200_RS232_SplitScreen(ID,Width,Heigth,WindowCount,@nWndRect )) * 10;
   end;
+end;
+
+class function TCPScreen.LoadFrom(AKVList: TStrings): TCPScreen;
+begin
+  Result := nil;
+  Result := TCPScreen.Create;
+  Result.ID := StrToInt(AKVList.Values['ID']);
+  Result.Width := StrToInt(AKVList.Values['Width']);
+  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
+  Result.IsSendByNet := StrToBool(AKVList.Values['IsSendByNet']);
+  Result.IP := AKVList.Values['IP'];
+  Result.Port := StrToInt(AKVList.Values['Port']);
+  Result.IDCode := StrToInt(AKVList.Values['IDCode']);
+  Result.ComNO := StrToInt(AKVList.Values['ComNO']);
+  Result.Baudrate := StrToInt(AKVList.Values['Baudrate']);
+  Result.Timeout := StrToInt(AKVList.Values['Timeout']);
 end;
 
 function TCPScreen.GetIP(AIP: string): Integer;

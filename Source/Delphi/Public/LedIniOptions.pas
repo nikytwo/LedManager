@@ -51,6 +51,7 @@ type
     FTextSourceName: string;
     FRefreshTime: integer;
     FDriverFun: string;
+    FDefTimeout: Integer;
     procedure SetDatabase(const Value: string);
     procedure SetDBServer(const Value: string);
     procedure SetPassword(const Value: string);
@@ -95,6 +96,7 @@ type
     procedure SetTextSourceName(const Value: string);
     procedure SetRefreshTime(const Value: integer);
     procedure SetDriverFun(const Value: string);
+    procedure SetDefTimeout(const Value: Integer);
   public
     procedure LoadSettings(Ini: TIniFile);
     procedure SaveSettings(Ini: TIniFile);
@@ -151,6 +153,7 @@ type
     property LSNDefWindowStayTime: Integer read FLSNDefWindowStayTime write SetLSNDefWindowStayTime;
     property LSNDefWindowAlignment: Integer read FLSNDefWindowAlignment write SetLSNDefWindowAlignment;
     property LSNDefWindowAddStyle: Integer read FLSNDefWindowAddStyle write SetLSNDefWindowAddStyle;
+    property DefTimeout: Integer read FDefTimeout write SetDefTimeout;
 
     {显示屏参数信息}
     property ScreenCount: Integer read FScreenCount write SetScreenCount;
@@ -213,6 +216,7 @@ begin
     LSNDefWindowRunSpeed := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowRunSpeed', 4);
     LSNDefWindowStayTime := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowStayTime', 0);
     LSNDefWindowAlignment := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowAlignment', 1);
+    DefTimeout := Ini.ReadInteger('LSNDefInfo', 'DefTimeout', 600);
 
     {显示屏参数信息}
     FScreenCount := Ini.ReadInteger('LedInfo', 'ScreenCount', 0);
@@ -285,7 +289,8 @@ begin
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWidth', LSNDefWidth);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowRunSpeed', LSNDefWindowRunSpeed);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowStayTime', LSNDefWindowStayTime);
-    Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowAlignment', LSNDefWindowAlignment);
+    Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowAlignment', LSNDefWindowAlignment); 
+    Ini.WriteInteger('LSNDefInfo', 'DefTimeout', FDefTimeout);
 
     {显示屏参数信息}    
     Ini.WriteInteger('LedInfo', 'ScreenCount', FScreens.Count);
@@ -350,6 +355,11 @@ end;
 procedure TIniOptions.SetDBServer(const Value: string);
 begin
   FDBServer := Value;
+end;
+
+procedure TIniOptions.SetDefTimeout(const Value: Integer);
+begin
+  FDefTimeout := Value;
 end;
 
 procedure TIniOptions.SetPassword(const Value: string);

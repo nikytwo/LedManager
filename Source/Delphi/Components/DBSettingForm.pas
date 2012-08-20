@@ -60,11 +60,12 @@ end;
 
 procedure TFormDBSetting.btnTestClick(Sender: TObject);
 begin
-  { TODO : 测试是否能获取数据 }
+  { DONE : 测试是否能获取数据 }
   if FDBTextService = nil then
   begin
     FDBTextService := TDBTextSourceService.Create;
   end;
+  { TODO : 不应该Save DB Setting }
   SaveDBSetting;
   FDBTextService.LoadSettingFrom(IniOptions);
   try

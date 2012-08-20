@@ -21,7 +21,8 @@ type
     destructor Destroy; override;  
 
     function Show: Integer; override;
-    function SaveTo: TStrings; override;
+    function SaveTo: TStrings; override;     
+    class function LoadFrom(AKVList: TStrings): TLedWindow;
   published
 
   end;
@@ -41,6 +42,23 @@ destructor TCPWindow.Destroy;
 begin
 
   inherited;
+end;
+
+class function TCPWindow.LoadFrom(AKVList: TStrings): TLedWindow;
+begin
+  Result := TCPWindow.Create;
+  Result.TextSource := AKVList.Values['TextSource'];
+  Result.X := StrToInt(AKVList.Values['X']);
+  Result.Y := StrToInt(AKVList.Values['Y']);
+  Result.Width := StrToInt(AKVList.Values['Width']);
+  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
+  Result.FontName := AKVList.Values['FontName'];
+  Result.FontSize := StrToInt(AKVList.Values['FontSize']);
+  Result.Color := StrToInt(AKVList.Values['FontColor']);
+  Result.Effect := StrToInt(AKVList.Values['Effect']);
+  Result.RunSpeed := StrToInt(AKVList.Values['RunSpeed']);
+  Result.StayTime := StrToInt(AKVList.Values['StayTime']);
+  Result.Alignment := StrToInt(AKVList.Values['Alignment']);
 end;
 
 function TCPWindow.SaveTo: TStrings;

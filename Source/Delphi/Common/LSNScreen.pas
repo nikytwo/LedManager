@@ -10,6 +10,7 @@ uses
          
 const
   DefaultHParent = 0;
+  LSNScreenType = 'LSN';
 
 type
 { TLSNScreen }
@@ -39,7 +40,8 @@ type
                                   
     function InitComm: Integer; override;
     function FreeComm: Integer; override;
-    function SaveTo: TStrings; override;
+    function SaveTo: TStrings; override;  
+    class function LoadFrom(AKVList: TStrings): TLSNScreen;
 
     property ColorStyle: Integer read FColorStyle write SetColorStyle;
     property ModeStyle: Integer read FModeStyle write SetModeStyle;
@@ -113,6 +115,28 @@ begin
   begin
     Result := Result + (1 - SendScreenPara_UDP(PChar(IP), Port, DefaultHParent)) * 10;
   end;
+end;
+
+class function TLSNScreen.LoadFrom(AKVList: TStrings): TLSNScreen;
+begin
+  Result := nil;
+  Result := TLSNScreen.Create;
+  Result.ID := StrToInt(AKVList.Values['ID']);
+  Result.Width := StrToInt(AKVList.Values['Width']);
+  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
+  Result.IsSendByNet := StrToBool(AKVList.Values['IsSendByNet']);
+  Result.IP := AKVList.Values['IP'];
+  Result.Port := StrToInt(AKVList.Values['Port']);
+  Result.IDCode := StrToInt(AKVList.Values['IDCode']);
+  Result.ComNO := StrToInt(AKVList.Values['ComNO']);
+  Result.Baudrate := StrToInt(AKVList.Values['Baudrate']);
+  Result.ColorStyle := StrToInt(AKVList.Values['ColorStyle']);
+  Result.ModeStyle := StrToInt(AKVList.Values['ModeStyle']);
+  Result.TimerON := StrToBool(AKVList.Values['TimerON']);
+  Result.TemperatureON := StrToBool(AKVList.Values['TemperatureON']);
+  Result.MainON := StrToBool(AKVList.Values['MainON']);
+  Result.TitleON := StrToBool(AKVList.Values['TitleON']);
+  Result.TitleStyle := StrToInt(AKVList.Values['TitleStyle']);
 end;
 
 function TLSNScreen.SaveTo: TStrings;

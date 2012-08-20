@@ -29,6 +29,7 @@ type
 
     function Show: Integer; override;
     function SaveTo: TStrings; override;
+    class function LoadFrom(AKVList: TStrings): TLSNWindow;
 
     property HEXFile: string read FHEXFile write SetHEXFile;
     property AddStyle: Integer read FAddStyle write SetAddStyle;
@@ -52,6 +53,24 @@ destructor TLSNWindow.Destroy;
 begin
 
   inherited;
+end;
+
+class function TLSNWindow.LoadFrom(AKVList: TStrings): TLSNWindow;
+begin
+  Result := TLSNWindow.Create;
+  Result.TextSource := AKVList.Values['TextSource'];
+  Result.X := StrToInt(AKVList.Values['X']);
+  Result.Y := StrToInt(AKVList.Values['Y']);
+  Result.Width := StrToInt(AKVList.Values['Width']);
+  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
+  Result.FontName := AKVList.Values['FontName'];
+  Result.FontSize := StrToInt(AKVList.Values['FontSize']);
+  Result.Color := StrToInt(AKVList.Values['FontColor']);
+  Result.Effect := StrToInt(AKVList.Values['Effect']);
+  Result.RunSpeed := StrToInt(AKVList.Values['RunSpeed']);
+  Result.StayTime := StrToInt(AKVList.Values['StayTime']);
+  Result.Alignment := StrToInt(AKVList.Values['Alignment']);
+  Result.AddStyle := StrToInt(AKVList.Values['AddStyle']);
 end;
 
 function TLSNWindow.SaveTo: TStrings;

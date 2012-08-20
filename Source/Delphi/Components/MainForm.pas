@@ -75,7 +75,7 @@ begin
   LoadDBSetting;
   FDBTextService := TDBTextSourceService.Create;
   FLedManager := TLedManager.Create;
-  FLedManager.LoadFrom(IniOptions, 'LSN');   
+  FLedManager.LoadFrom(IniOptions);
   EnableCtrl;
 end;
 
@@ -114,14 +114,15 @@ begin
   if FormSetting.ShowModal = mrOK then
   begin
     LoadDBSetting;
-    FLedManager.LoadFrom(IniOptions, 'LSN');
+    FLedManager.LoadFrom(IniOptions);
   end;
 end;
 
 procedure TFormMain.rzbtbtnDBSettingClick(Sender: TObject);
 begin
   if FormDBSetting.ShowModal = mrOK then
-  begin
+  begin          
+    LoadDBSetting;
     FDBTextService.LoadSettingFrom(IniOptions);
   end;
 end;

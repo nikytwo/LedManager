@@ -2,4 +2,6 @@
 Bin
 Install
 *.dcu
-
+*.txaPackage
+*.tvsconfig
+Source/Delphi/ModelSupport_PrjLedManager

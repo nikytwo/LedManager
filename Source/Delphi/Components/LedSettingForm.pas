@@ -10,7 +10,7 @@ uses
 type
   TFormSetting = class(TForm)
     cnpnlLeft: TCnPanel;
-    cnpnlContext: TCnPanel;
+    cnpnlLSNPanel: TCnPanel;
     cnbtnAddScreen: TCnBitBtn;
     cnbtnDelScreen: TCnBitBtn;
     lstScreens: TListBox;
@@ -54,6 +54,42 @@ type
     alblTextSource: TCnAALabel;
     edtTextSource: TEdit;
     edtIP: TEdit;
+    cnpnlCPPanel: TCnPanel;
+    albl1: TCnAALabel;
+    grp1: TGroupBox;
+    lbl3: TLabel;
+    lbl6: TLabel;
+    lbl7: TLabel;
+    lbl8: TLabel;
+    rb1: TRadioButton;
+    cbb1: TComboBox;
+    cbb2: TComboBox;
+    rb2: TRadioButton;
+    edt1: TEdit;
+    edt2: TEdit;
+    grp2: TGroupBox;
+    lbl9: TLabel;
+    lbl10: TLabel;
+    se1: TCnSpinEdit;
+    se2: TCnSpinEdit;
+    grp3: TGroupBox;
+    lbl13: TLabel;
+    lbl14: TLabel;
+    lbl15: TLabel;
+    lbl16: TLabel;
+    lbl17: TLabel;
+    lbl18: TLabel;
+    cbb5: TComboBox;
+    cbb6: TComboBox;
+    cbb7: TComboBox;
+    se3: TCnSpinEdit;
+    se4: TCnSpinEdit;
+    cbb8: TComboBox;
+    mmo1: TMemo;
+    cnbtnAddScreen1: TCnBitBtn;
+    cnbtnAddScreen2: TCnBitBtn;
+    cnbtnAddScreen3: TCnBitBtn;
+    edt3: TEdit;
     procedure rbClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cnbtnAddScreenClick(Sender: TObject);
@@ -83,7 +119,8 @@ type
     procedure SetCtrlToObject;
 
     procedure AddLSNScreen;
-    procedure DelLSNScreen(Index: Integer);
+    procedure AddCPScreen;
+    procedure DelScreen(Index: Integer);
   public
     { Public declarations }
     property LedManager: TLedManager read FLedManager;
@@ -94,7 +131,7 @@ var
 
 implementation
 
-uses LSNScreen, LSNWindow, LedIniOptions;
+uses LSNScreen, LSNWindow, LedIniOptions, CPScreen, CPWindow;
 
 {$R *.dfm}
 
@@ -185,7 +222,7 @@ procedure TFormSetting.cnbtnDelScreenClick(Sender: TObject);
 begin
   StartChangeOrSave;
 
-  DelLSNScreen(lstScreens.Count - 1);
+  DelScreen(lstScreens.Count - 1);
   RefreshListBox;
   EnableCtrl;
 
@@ -197,7 +234,7 @@ begin
   Init;
 end;   
 
-procedure TFormSetting.DelLSNScreen(Index: Integer);
+procedure TFormSetting.DelScreen(Index: Integer);
 begin
   if (0 <= Index) and (Index < FLedManager.ScreenCount) then
   begin
@@ -205,14 +242,14 @@ begin
   end;
 end;   
 
-procedure TFormSetting.AddLSNScreen;
+procedure TFormSetting.AddCPScreen;
 var
-  aScreen: TLedScreen;
-  aWindow: TLedWindow;
+  aScreen: TCPScreen;
+  aWindow: TCPWindow;
 begin
-  aScreen := TLSNScreen.Create;
-  aWindow := TLSNWindow.Create;
-  aScreen.ID := FLedManager.GetNewScreenID('LSN');
+  aScreen := TCPScreen.Create;
+  aWindow := TCPWindow.Create;
+  aScreen.ID := FLedManager.GetNewScreenID(CPScreenType);
   { 设置显示屏默认值 }
   aScreen.Width := IniOptions.LSNDefWidth;
   aScreen.Heigth := IniOptions.LSNDefHeigth;
@@ -222,13 +259,7 @@ begin
   aScreen.IDCode := IniOptions.LSNDefIDCode;
   aScreen.ComNO := IniOptions.LSNDefComNO;
   aScreen.Baudrate := IniOptions.LSNDefBaudrate;
-  TLSNScreen(aScreen).ColorStyle := IniOptions.LSNDefColorStyle;
-  TLSNScreen(aScreen).ModeStyle := IniOptions.LSNDefModeStyle;
-  TLSNScreen(aScreen).TimerON := IniOptions.LSNDefTimerON;
-  TLSNScreen(aScreen).TemperatureON := IniOptions.LSNDefTemperatureON;
-  TLSNScreen(aScreen).MainON := IniOptions.LSNDefMainON;
-  TLSNScreen(aScreen).TitleON := IniOptions.LSNDefTitleON;
-  TLSNScreen(aScreen).TitleStyle := IniOptions.LSNDefTitleStyle;
+  aScreen.Timeout := IniOptions.DefTimeout;
 
   aWindow.X := IniOptions.LSNDefWindowX;
   aWindow.Y := IniOptions.LSNDefWindowY;
@@ -241,11 +272,51 @@ begin
   aWindow.RunSpeed := IniOptions.LSNDefWindowRunSpeed;
   aWindow.StayTime := IniOptions.LSNDefWindowStayTime;
   aWindow.Alignment := IniOptions.LSNDefWindowAlignment;
-  TLSNWindow(aWindow).AddStyle := IniOptions.LSNDefWindowAddStyle;
 
   aScreen.AddWindow(aWindow);
   FLedManager.AddScreen(aScreen);
+end;
 
+procedure TFormSetting.AddLSNScreen;
+var
+  aScreen: TLSNScreen;
+  aWindow: TLSNWindow;
+begin
+  aScreen := TLSNScreen.Create;
+  aWindow := TLSNWindow.Create;
+  aScreen.ID := FLedManager.GetNewScreenID(LSNScreenType);
+  { 设置显示屏默认值 }
+  aScreen.Width := IniOptions.LSNDefWidth;
+  aScreen.Heigth := IniOptions.LSNDefHeigth;
+  aScreen.IsSendByNet := IniOptions.LSNDefIsSendByNet;
+  aScreen.IP := IniOptions.LSNDefIP;
+  aScreen.Port := IniOptions.LSNDefPort;
+  aScreen.IDCode := IniOptions.LSNDefIDCode;
+  aScreen.ComNO := IniOptions.LSNDefComNO;
+  aScreen.Baudrate := IniOptions.LSNDefBaudrate;
+  aScreen.ColorStyle := IniOptions.LSNDefColorStyle;
+  aScreen.ModeStyle := IniOptions.LSNDefModeStyle;
+  aScreen.TimerON := IniOptions.LSNDefTimerON;
+  aScreen.TemperatureON := IniOptions.LSNDefTemperatureON;
+  aScreen.MainON := IniOptions.LSNDefMainON;
+  aScreen.TitleON := IniOptions.LSNDefTitleON;
+  aScreen.TitleStyle := IniOptions.LSNDefTitleStyle;
+
+  aWindow.X := IniOptions.LSNDefWindowX;
+  aWindow.Y := IniOptions.LSNDefWindowY;
+  aWindow.Width := IniOptions.LSNDefWindowWidth;
+  aWindow.Heigth := IniOptions.LSNDefWindowHeigth;
+  aWindow.FontName := IniOptions.LSNDefWindowFontName;
+  aWindow.FontSize := IniOptions.LSNDefWindowFontSize;
+  aWindow.Color := IniOptions.LSNDefWindowFontColor;
+  aWindow.Effect := IniOptions.LSNDefWindowEffect;
+  aWindow.RunSpeed := IniOptions.LSNDefWindowRunSpeed;
+  aWindow.StayTime := IniOptions.LSNDefWindowStayTime;
+  aWindow.Alignment := IniOptions.LSNDefWindowAlignment;
+  aWindow.AddStyle := IniOptions.LSNDefWindowAddStyle;
+
+  aScreen.AddWindow(aWindow);
+  FLedManager.AddScreen(aScreen);    
 end;
 
 procedure TFormSetting.Init;
@@ -257,48 +328,29 @@ end;
 procedure TFormSetting.LoadSetting;
 begin
   IniOptions.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'LedManager.ini');
-  FLedManager.LoadFrom(IniOptions, 'LSN');     
+  FLedManager.LoadFrom(IniOptions);
 end;
 
 procedure TFormSetting.SaveSetting;
 var
   i, j: Integer;
   tmpKVList: TStrings;
-  tmpScreen: TLSNScreen;
-  tmpWindow: TLSNWindow;
 begin
+  { TODO : 未考虑cp2500 }
   { 将Led对象信息保存至ini文件中 }
   //加载显示屏参数
   for i := IniOptions.ScreenCount - 1 downto 0 do
-  begin  
-    if IniOptions.Screens[i].Values['ScreenType'] = 'LSN' then
-    begin
-      //清除配置文件ini中的LS-N控制卡的显示屏，稍后再加上
-      IniOptions.DeleteScreen(i);
-    end;
+  begin
+    //清除配置文件ini中的所有显示屏，稍后再加上
+    IniOptions.DeleteScreen(i);
   end;
   for i := IniOptions.WindowCount - 1 downto 0 do
   begin
-    if IniOptions.Windows[i].Values['ScreenType'] = 'LSN' then
-    begin        
-      //清除配置文件ini中的LS-N控制卡的显示屏的相关区域/窗口，稍后再加上
-      IniOptions.DeleteWindow(i);
-    end;
+    //清除配置文件ini中的所有显示屏的相关区域/窗口，稍后再加上
+    IniOptions.DeleteWindow(i);
   end;
 
-  for i := 0 to FLedManager.ScreenCount - 1 do
-  begin
-    tmpScreen := FLedManager.Screens[i] as TLSNScreen;
-    tmpKVList := tmpScreen.SaveTo;
-    IniOptions.AddScreens(tmpKVList);
-
-    for j := 0 to tmpScreen.WindowCount - 1 do
-    begin
-      tmpWindow := tmpScreen.Windows[0] as TLSNWindow;
-      tmpKVList := tmpWindow.SaveTo;
-      IniOptions.AddWindows(tmpKVList);
-    end;
-  end;
+  FLedManager.SaveTo(IniOptions);
 
   IniOptions.SaveToFile(ExtractFilePath(ParamStr(0)) + 'LedManager.ini');
 end;
@@ -333,7 +385,17 @@ begin
   if AScreen = nil then
   begin
     Exit;
+  end;   
+  { TODO : 根据控制卡类型进行保存 }
+  if curScreen.ScreenType = CPScreenType then
+  begin
+    SetCPInfo2Ctrl(curScreen);
+  end
+  else
+  begin
+    SetLSNInfo2Ctrl
   end;
+
   lsnScreen := AScreen as TLSNScreen;
   grpHardSetting.Caption := IntToStr(lsnScreen.ID) + '号显示屏硬件设置';
   seWidth.Value := lsnScreen.Width;
@@ -376,7 +438,7 @@ procedure TFormSetting.SetCtrlToObject;
 var
   lsnScreen: TLSNScreen;
 begin
-  if not cnpnlContext.Enabled then
+  if not Self.Enabled then
   begin
     Exit;
   end;
@@ -436,14 +498,20 @@ end;
 
 procedure TFormSetting.endChangeOrSave;
 begin
-  cnpnlContext.Enabled := True;
+  { TODO : Panel的控制应滞后 }
+  cnpnlLSNPanel.Enabled := True;
+  cnpnlLSNPanel.Visible := True;
+  Self.Enabled := True;
   Screen.Cursor := crDefault;
 end;
 
 procedure TFormSetting.StartChangeOrSave;
 begin
-  Screen.Cursor := crHourGlass;
-  cnpnlContext.Enabled := False;
+  { TODO : Panel的控制应滞后 }
+  Screen.Cursor := crHourGlass; 
+  Self.Enabled := False;
+  cnpnlLSNPanel.Visible := False;
+  cnpnlLSNPanel.Enabled := False;
 end;
 
 procedure TFormSetting.SaveDefSetting;
