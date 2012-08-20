@@ -101,8 +101,7 @@ uses LSNScreen, LSNWindow, LedIniOptions;
 { TFormSetting } 
 
 procedure TFormSetting.CtrlChange(Sender: TObject);
-begin
-   { TODO : test }
+begin   
   SetCtrlToObject;
 end;        
 
@@ -116,7 +115,7 @@ begin
     Exit;
   end;
 
-  { TODO : 临时应用参数信息来测试 }
+  { DONE : 临时应用参数信息来测试 }
 
   LedManager.SendTextTo(curScreen.ScreenType, curScreen.ID, 1, mmoText.Text);
 end;

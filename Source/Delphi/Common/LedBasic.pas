@@ -10,7 +10,7 @@ uses
   LedIniOptions;
 
 const
-  LSNCBSuccesed = 0;
+  CBSuccesed = 0;
 
 type
 
@@ -334,7 +334,7 @@ begin
            
   try
     tmpRst := InitComm;
-    if tmpRst = LSNCBSuccesed then
+    if tmpRst = CBSuccesed then
     begin
       tmpRst := tmpRst + curWindow.Show;
     end;

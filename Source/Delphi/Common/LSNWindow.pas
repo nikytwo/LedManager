@@ -104,7 +104,7 @@ begin
   else
   begin
     Result := (1 - SendDATAToComm(Screen.ComNo, Screen.Baudrate,
-      PChar(HEXFile), DefaultHParent)) * 1000
+      PChar(HEXFile), DefaultHParent)) * 1000;
   end;
 end;
 

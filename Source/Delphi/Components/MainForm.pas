@@ -137,14 +137,14 @@ end;
 
 procedure TFormMain.rzbtbtnStartClick(Sender: TObject);
 begin
-  { TODO : 开始自动刷新数据并显示 }
+  { DONE : 开始自动刷新数据并显示 }
   tmrShowAllText.Interval := IniOptions.RefreshTime;
   EnableCtrl;
 end;
 
 procedure TFormMain.rzbtbtnStopClick(Sender: TObject);
 begin
-  { TODO : 停止自动刷新数据 }
+  { DONE : 停止自动刷新数据 }
   tmrShowAllText.Interval := 0;
   EnableCtrl;
 end;

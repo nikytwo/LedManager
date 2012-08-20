@@ -10,10 +10,11 @@ uses
   LSNScreen in 'Common\LSNScreen.pas',
   LSNFun in 'Public\LSNFun.pas',
   LSNWindow in 'Common\LSNWindow.pas',
-  LedSettingForm in 'Components\LedSettingForm.pas' {FormSetting},
   DBSettingForm in 'Components\DBSettingForm.pas' {FormDBSetting},
   DBTextSourceService in 'Common\DBTextSourceService.pas',
-  wdRunOnce in 'Public\wdRunOnce.pas';
+  wdRunOnce in 'Public\wdRunOnce.pas',
+  CPWindow in 'Common\CPWindow.pas',
+  LedSettingForm in 'Components\LedSettingForm.pas' {FormSetting};
 
 {$R *.res}
 
@@ -22,8 +23,8 @@ begin
   if not AppHasRun(Application.Handle) then
   begin
     Application.CreateForm(TFormMain, FormMain);
-  Application.CreateForm(TFormSetting, FormSetting);
   Application.CreateForm(TFormDBSetting, FormDBSetting);
+  Application.CreateForm(TFormSetting, FormSetting);
   Application.Run;
   end;
 end.

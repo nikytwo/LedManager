@@ -88,13 +88,11 @@ begin
 end;
 
 function TLSNScreen.InitComm: Integer;
-var
-  tmpRst: Integer;
 begin
   //创建串口通讯实例
   if CreateComm then
   begin
-    tmpRst := 0;
+    Result := 0;
   end
   else
   begin
@@ -109,36 +107,34 @@ begin
   //同步发送方式下发送屏参数到下位机
   if not IsSendByNet then
   begin
-    tmpRst := tmpRst + (1 - SendScreenPara(ComNo, Baudrate, DefaultHParent)) * 10;
+    Result := Result + (1 - SendScreenPara(ComNo, Baudrate, DefaultHParent)) * 10;
   end
   else
   begin
-    tmpRst := tmpRst + (1 - SendScreenPara_UDP(PChar(IP), Port, DefaultHParent)) * 10
+    Result := Result + (1 - SendScreenPara_UDP(PChar(IP), Port, DefaultHParent)) * 10;
   end;
-
-  Result := tmpRst;
 end;
 
 function TLSNScreen.SaveTo: TStrings;
 begin
-    Result := TStringList.Create;
-    Result.Add('ScreenType=' + ScreenType);
-    Result.Add('ID=' + IntToStr(ID));
-    Result.Add('Width=' + IntToStr(Width));
-    Result.Add('Heigth=' + IntToStr(Heigth));
-    Result.Add('IsSendByNet=' + BoolToStr(IsSendByNet));
-    Result.Add('IP=' + IP);
-    Result.Add('Port=' + IntToStr(Port));
-    Result.Add('IDCode=' + IntToStr(IDCode));
-    Result.Add('ComNO=' + IntToStr(ComNO));
-    Result.Add('Baudrate=' + IntToStr(Baudrate));
-    Result.Add('ColorStyle=' + IntToStr(ColorStyle));
-    Result.Add('ModeStyle=' + IntToStr(ModeStyle));
-    Result.Add('TimerON=' + BoolToStr(TimerON));
-    Result.Add('TemperatureON=' + BoolToStr(TemperatureON));
-    Result.Add('MainON=' + BoolToStr(MainON));
-    Result.Add('TitleON=' + BoolToStr(TitleON));
-    Result.Add('TitleStyle=' + IntToStr(TitleStyle));
+  Result := TStringList.Create;
+  Result.Add('ScreenType=' + ScreenType);
+  Result.Add('ID=' + IntToStr(ID));
+  Result.Add('Width=' + IntToStr(Width));
+  Result.Add('Heigth=' + IntToStr(Heigth));
+  Result.Add('IsSendByNet=' + BoolToStr(IsSendByNet));
+  Result.Add('IP=' + IP);
+  Result.Add('Port=' + IntToStr(Port));
+  Result.Add('IDCode=' + IntToStr(IDCode));
+  Result.Add('ComNO=' + IntToStr(ComNO));
+  Result.Add('Baudrate=' + IntToStr(Baudrate));
+  Result.Add('ColorStyle=' + IntToStr(ColorStyle));
+  Result.Add('ModeStyle=' + IntToStr(ModeStyle));
+  Result.Add('TimerON=' + BoolToStr(TimerON));
+  Result.Add('TemperatureON=' + BoolToStr(TemperatureON));
+  Result.Add('MainON=' + BoolToStr(MainON));
+  Result.Add('TitleON=' + BoolToStr(TitleON));
+  Result.Add('TitleStyle=' + IntToStr(TitleStyle));
 end;
 
 procedure TLSNScreen.SetColorStyle(const Value: Integer);

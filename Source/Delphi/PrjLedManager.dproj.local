@@ -1,2 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject/>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2012-08-18 08:54:43.281.pas,I:\mySource\Delphi\LedManager\Source\Delphi\Unit1.pas=I:\mySource\Delphi\LedManager\Source\Delphi\Common\CPWindow.pas</Transaction>
+    <Transaction>2012-08-18 11:55:46.937.pas,I:\mySource\Delphi\LedManager\Source\Delphi\Components\LedSettingForm.pas=I:\mySource\Delphi\LedManager\Source\Delphi\Components\CPLedSettingForm.pas</Transaction>
+    <Transaction>2012-08-18 11:55:46.937.dfm,I:\mySource\Delphi\LedManager\Source\Delphi\Components\LedSettingForm.dfm=I:\mySource\Delphi\LedManager\Source\Delphi\Components\CPLedSettingForm.dfm</Transaction>
+    <Transaction>2012-08-18 11:58:38.406.pas,I:\mySource\Delphi\LedManager\Source\Delphi\Components\CPLedSettingForm.pas=</Transaction>
+    <Transaction>2012-08-18 11:58:38.406.dfm,I:\mySource\Delphi\LedManager\Source\Delphi\Components\CPLedSettingForm.dfm=</Transaction>
+  </Transactions>
+</BorlandProject>
