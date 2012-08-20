@@ -25,7 +25,6 @@ type
     lbl4: TLabel;
     lbl5: TLabel;
     edtIPPort: TEdit;
-    edtIP: TRzMaskEdit;
     grpParaSetting: TGroupBox;
     lblWidth: TLabel;
     lblHeight: TLabel;
@@ -54,6 +53,7 @@ type
     cnbtnCancel: TCnBitBtn;
     alblTextSource: TCnAALabel;
     edtTextSource: TEdit;
+    edtIP: TEdit;
     procedure rbClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cnbtnAddScreenClick(Sender: TObject);
@@ -258,7 +258,7 @@ procedure TFormSetting.LoadSetting;
 begin
   IniOptions.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'LedManager.ini');
   FLedManager.LoadFrom(IniOptions, 'LSN');     
-end;     
+end;
 
 procedure TFormSetting.SaveSetting;
 var

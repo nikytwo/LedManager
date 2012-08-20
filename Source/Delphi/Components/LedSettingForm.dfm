@@ -275,7 +275,7 @@ object FormSetting: TFormSetting
       object edtIPPort: TEdit
         Tag = 1
         Left = 296
-        Top = 46
+        Top = 47
         Width = 88
         Height = 19
         Font.Charset = DEFAULT_CHARSET
@@ -288,18 +288,17 @@ object FormSetting: TFormSetting
         Text = '1024'
         OnChange = CtrlChange
       end
-      object edtIP: TRzMaskEdit
+      object edtIP: TEdit
+        Tag = 1
         Left = 146
-        Top = 46
-        Width = 86
+        Top = 47
+        Width = 87
         Height = 19
-        EditMask = '!999.999.999.999;1;_'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
-        MaxLength = 15
         ParentFont = False
         TabOrder = 5
         Text = '192.168.128.128'
