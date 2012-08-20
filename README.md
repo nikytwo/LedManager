@@ -1,4 +1,6 @@
 Ledmanager
 ==========
 
-Ledç”µå­å±ç®¡ç†å™¨ï¼Œè‡ªåŠ¨ä»Žæ•°æ®åº“èŽ·å–ä¿¡æ¯å¹¶æ˜¾ç¤ºåœ¨ç”µå­å±ä¸Šã€‚
+Ledµç×ÓÆÁ¹ÜÀíÆ÷£¬×Ô¶¯´ÓÊý¾Ý¿â»ñÈ¡ÐÅÏ¢²¢ÏÔÊ¾ÔÚµç×ÓÆÁÉÏ¡£
+¿ª·¢»·¾³£ºDelphi2007 + cnvcl + Raize.v4.2.1
+
