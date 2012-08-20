@@ -117,12 +117,12 @@ object FormDBSetting: TFormDBSetting
       Width = 89
       Height = 21
       ItemHeight = 13
-      ItemIndex = 0
       TabOrder = 0
       Text = 'Sybase'
       Items.Strings = (
         'Sybase'
-        'MSSQL')
+        'MSSQL'
+        'SybaseOLEDB')
     end
     object edtDatabase: TEdit
       Tag = 1

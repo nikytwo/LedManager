@@ -5,6 +5,8 @@ interface
 uses
   Classes,
   SqlExpr,
+  ADODB,
+  DB,
   LedIniOptions;
   
 const
@@ -18,6 +20,8 @@ type
   private    
     FDBConnetion: TSQLConnection;
     FDBQuery: TSQLQuery;
+    FADOConnection: TADOConnection;
+    FADOQuery: TADOQuery;
     FScrTable: string;
     FTextSourceName: string;
     FTextName: string;
@@ -50,9 +54,12 @@ end;
 constructor TDBTextSourceService.Create;
 begin
   inherited;
-  FDBConnetion := TSQLConnection.Create(nil);   
-  FDBQuery := TSQLQuery.Create(nil);  
+  FDBConnetion := TSQLConnection.Create(nil);
+  FDBQuery := TSQLQuery.Create(nil);
   FDBQuery.SQLConnection := FDBConnetion;
+  FADOConnection := TADOConnection.Create(nil);
+  FADOQuery := TADOQuery.Create(nil);
+  FADOQuery.Connection := FADOConnection;
   LoadSettingFrom(IniOptions);
 end;
 
@@ -66,20 +73,35 @@ begin
 end;
 
 function TDBTextSourceService.GetTexts: TStringList;
+var
+  ds: TWideDataSet;
+  con: TCustomConnection;
 begin
   //创建对象储存数据
   Result := TStringList.Create;
+  if IniOptions.DBDriverName = 'SybaseOLEDB' then
+  begin
+    con := FADOConnection;
+    FADOQuery.SQL.Clear;
+    FADOQuery.SQL.Add(buildSQLString);
+    ds := FADOQuery;
+  end
+  else
+  begin
+    con := FDBConnetion;   
+    FDBQuery.SQL.Clear;
+    FDBQuery.SQL.Add(buildSQLString);
+    ds := FDBQuery;
+  end;
   try
     //从数据库获取数据  
-    FDBConnetion.Close;
-    FDBConnetion.Open;  
-    with FDBQuery do
+    con.Close;
+    con.Open;
+    with ds do
     begin
       Close;
-      SQL.Clear;
-      SQL.Add(buildSQLString);
       Open;
-      while not Eof do      
+      while not Eof do
       begin
         //保存
         Result.Add(FieldByName(TextSourceFieldName).AsString
@@ -88,8 +110,8 @@ begin
       end;    
     end;
   finally
-    FDBQuery.Close;
-    FDBConnetion.Close;
+    ds.Close;
+    con.Close;
   end;
 end;
 
@@ -121,6 +143,16 @@ begin
     FDBConnetion.Params.Add('DataBase=' + AIniOptions.Database);
     FDBConnetion.Params.Add('User_Name=' + AIniOptions.User);
     FDBConnetion.Params.Add('Password=' + AIniOptions.Password);
+  end
+  else if IniOptions.DBDriverName = 'SybaseOLEDB' then
+  begin
+    FADOConnection.LoginPrompt := False;
+    FADOConnection.ConnectionString := 'Provider=Sybase.ASEOLEDBProvider.2'
+     + ';Initial Catalog=' + AIniOptions.Database
+     + ';User ID=' + AIniOptions.User
+     + ';Password=' + AIniOptions.Password
+     + ';Data Source=' + AIniOptions.DBServer
+     + ';Persist Security Info=False'
   end;
   FScrTable := AIniOptions.SourceTableName;
   FTextSourceName := AIniOptions.TextSourceName;

@@ -5,7 +5,7 @@ object FormMain: TFormMain
   BorderStyle = bsSingle
   Caption = 'Led'#33258#21160#26174#31034
   ClientHeight = 316
-  ClientWidth = 528
+  ClientWidth = 225
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

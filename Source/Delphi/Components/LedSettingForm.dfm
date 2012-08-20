@@ -24,6 +24,7 @@ object FormSetting: TFormSetting
     Height = 337
     Align = alLeft
     Ctl3D = False
+    ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
     Transparent = False
@@ -91,6 +92,7 @@ object FormSetting: TFormSetting
     Height = 337
     Align = alClient
     Ctl3D = False
+    ParentBackground = False
     ParentCtl3D = False
     TabOrder = 1
     Transparent = False

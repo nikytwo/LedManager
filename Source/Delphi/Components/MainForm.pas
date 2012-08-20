@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, DB, SqlExpr, FMTBcd, Grids, DBGrids,
   LedBasic, DateUtils,
   DBTextSourceService, Menus, CnClasses, CnTrayIcon, RzButton, ExtCtrls,
-  CnTimer, WideStrings;
+  CnTimer, WideStrings, ADODB;
 
 const
   TextSourceFieldName = 'TextSource';
