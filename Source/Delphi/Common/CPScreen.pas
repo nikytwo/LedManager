@@ -46,7 +46,7 @@ implementation
 constructor TCPScreen.Create;
 begin
   inherited;
-  ScreenType := 'CP2500';
+  ScreenType := CPScreenType;
   FTimeout := 600;
 end;
 

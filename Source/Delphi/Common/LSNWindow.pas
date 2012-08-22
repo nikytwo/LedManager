@@ -6,7 +6,8 @@ uses
   Classes,
   SysUtils,
   LSNFun,
-  LedBasic;
+  LedBasic,
+  LSNScreen;
 
 const
   DefaultHParent = 0;
@@ -21,6 +22,7 @@ type
     procedure SetAddStyle(const Value: Integer);
     procedure SetHEXFile(const Value: string);
 
+    function ProgramInit(pin,DbColor,jno,PlayTimes:Integer):Integer;    
   protected
 
   public
@@ -73,6 +75,26 @@ begin
   Result.AddStyle := StrToInt(AKVList.Values['AddStyle']);
 end;
 
+function TLSNWindow.ProgramInit(pin, DbColor, jno, PlayTimes: Integer): Integer;
+var
+    reb:Integer;
+begin
+    Result:=0;
+    StartSend;
+    reb:=AddControl(pin,DbColor);
+    if reb=2 then
+    begin
+        Result:=1;
+        Exit;
+    end;
+    reb:=AddProgram(pin,jno,PlayTimes);
+    if reb=2 then
+    begin
+        Result:=2;
+        Exit;
+    end;
+end;
+
 function TLSNWindow.SaveTo: TStrings;
 begin
   Result := TStringList.Create;
@@ -105,26 +127,23 @@ begin
 end;
 
 function TLSNWindow.Show: Integer;
+var
+  sc: TLSNScreen;
 begin
-  if '' = FHEXFile then
-  begin
-    FHEXFile := 'Lsn_' + IntToStr(Screen.ID) + '_' + IntToStr(ID) + '.dat';
-  end;
-  //转化主区要显示的数据
-  AddString(Effect, RunSpeed, StayTime, Y, PChar(FontName), FontSize,
-    Color, PChar(HEXFile), PChar(Text), AddStyle);
+  sc := Screen as TLSNScreen;
+  //添加节目
+  Result := ProgramInit(sc.ID, sc.ColorStyle, 1, 0) * 1000;
 
-  //向主区发送数据
-  if Screen.IsSendByNet then
-  begin
-    Result := (1 - SendDATA_UDP(PChar(Screen.IP), Screen.Port, Screen.Baudrate,
-      PChar(HEXFile), DefaultHParent)) * 1000;
-  end
-  else
-  begin
-    Result := (1 - SendDATAToComm(Screen.ComNo, Screen.Baudrate,
-      PChar(HEXFile), DefaultHParent)) * 1000;
-  end;
+  //添加文件区域
+  AddFileArea(sc.ID, 1, 1, 0, 0, sc.Width, sc.Heigth);
+
+  //添加字符串到图文区域中
+  Result := Result + (AddFileString(sc.ID, 1, 1, 1, PChar(Text),
+    PChar(FontName), FontSize, Color, 0, 0, 0, Alignment, sc.Width,
+    sc.Heigth, Effect, 255, RunSpeed, StayTime, 1) - 1) * 100000;
+
+  //发送数据(真正)
+  Result := Result + (SendControl(sc.ID, 1, 0) - 1) * 1000000
 end;
 
 end.

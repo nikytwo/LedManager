@@ -52,6 +52,8 @@ type
     FRefreshTime: integer;
     FDriverFun: string;
     FDefTimeout: Integer;
+    FLSNDefTransMode: Integer;
+    FLSNDefCardType: Integer;
     procedure SetDatabase(const Value: string);
     procedure SetDBServer(const Value: string);
     procedure SetPassword(const Value: string);
@@ -97,6 +99,8 @@ type
     procedure SetRefreshTime(const Value: integer);
     procedure SetDriverFun(const Value: string);
     procedure SetDefTimeout(const Value: Integer);
+    procedure SetLSNDefCardType(const Value: Integer);
+    procedure SetLSNDefTransMode(const Value: Integer);
   public
     procedure LoadSettings(Ini: TIniFile);
     procedure SaveSettings(Ini: TIniFile);
@@ -126,6 +130,8 @@ type
     property TextName: string read FTextName write SetTextName;
 
     {LS-N控制卡的显示屏默认参数信息}
+    property LSNDefTransMode: Integer read FLSNDefTransMode write SetLSNDefTransMode;
+    property LSNDefCardType: Integer read FLSNDefCardType write SetLSNDefCardType;
     property LSNDefWidth: Integer read FLSNDefWidth write SetLSNDefWidth;
     property LSNDefHeigth: Integer read FLSNDefHeigth write SetLSNDefHeigth;
     property LSNDefIsSendByNet: boolean read FLSNDefIsSendByNet write SetLSNDefIsSendByNet;
@@ -190,6 +196,8 @@ begin
     FTextName := Ini.ReadString('DBConnectString', 'TextName', 'Text');
     
     {LS-N控制卡的显示屏默认参数信息}
+    LSNDefTransMode := Ini.ReadInteger('LSNDefInfo', 'LSNDefTransMode', 1);  
+    LSNDefCardType := Ini.ReadInteger('LSNDefInfo', 'LSNDefCardType', 3);
     LSNDefWidth := Ini.ReadInteger('LSNDefInfo', 'LSNDefWidth', 128);
     LSNDefHeigth := Ini.ReadInteger('LSNDefInfo', 'LSNDefHeigth', 128);
     LSNDefIsSendByNet := Ini.ReadBool('LSNDefInfo', 'LSNDefIsSendByNet', False);
@@ -212,7 +220,7 @@ begin
     LSNDefWindowFontName := Ini.ReadString('LSNDefInfo', 'LSNDefWindowFontName', '宋体');
     LSNDefWindowFontSize := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowFontSize', 12);
     LSNDefWindowFontColor := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowFontColor', 1);
-    LSNDefWindowEffect := Ini.ReadInteger('LSNDefWindowEffect', 'LSNDefWidth', 2);
+    LSNDefWindowEffect := Ini.ReadInteger('LSNDefWindowEffect', 'LSNDefWindowEffect', 2);
     LSNDefWindowRunSpeed := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowRunSpeed', 4);
     LSNDefWindowStayTime := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowStayTime', 0);
     LSNDefWindowAlignment := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowAlignment', 1);
@@ -263,7 +271,9 @@ begin
     Ini.WriteString('DBConnectString', 'TextSourceName', FTextSourceName);
     Ini.WriteString('DBConnectString', 'TextName', FTextName);
 
-    {LS-N控制卡的显示屏默认参数信息}
+    {LS-N控制卡的显示屏默认参数信息}                   
+    Ini.WriteInteger('LSNDefInfo', 'LSNDefTransMode', LSNDefTransMode);
+    Ini.WriteInteger('LSNDefInfo', 'LSNDefCardType', LSNDefCardType);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWidth', LSNDefWidth);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefHeigth', LSNDefHeigth);
     Ini.WriteBool('LSNDefInfo', 'LSNDefIsSendByNet', LSNDefIsSendByNet);
@@ -286,7 +296,7 @@ begin
     Ini.WriteString('LSNDefInfo', 'LSNDefWindowFontName', LSNDefWindowFontName);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowFontSize', LSNDefWindowFontSize);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowFontColor', LSNDefWindowFontColor);
-    Ini.WriteInteger('LSNDefInfo', 'LSNDefWidth', LSNDefWidth);
+    Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowEffect', LSNDefWindowEffect);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowRunSpeed', LSNDefWindowRunSpeed);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowStayTime', LSNDefWindowStayTime);
     Ini.WriteInteger('LSNDefInfo', 'LSNDefWindowAlignment', LSNDefWindowAlignment); 
@@ -426,6 +436,11 @@ begin
   FLSNDefBaudrate := Value;
 end;
 
+procedure TIniOptions.SetLSNDefCardType(const Value: Integer);
+begin
+  FLSNDefCardType := Value;
+end;
+
 procedure TIniOptions.SetLSNDefColorStyle(const Value: Integer);
 begin
   FLSNDefColorStyle := Value;
@@ -489,6 +504,11 @@ end;
 procedure TIniOptions.SetLSNDefTitleStyle(const Value: Integer);
 begin
   FLSNDefTitleStyle := Value;
+end;
+
+procedure TIniOptions.SetLSNDefTransMode(const Value: Integer);
+begin
+  FLSNDefTransMode := Value;
 end;
 
 procedure TIniOptions.SetLSNDefWidth(const Value: Integer);

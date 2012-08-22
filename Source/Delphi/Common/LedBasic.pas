@@ -310,7 +310,7 @@ begin
            
   try
     tmpRst := InitComm;
-    if tmpRst = CBSuccesed then
+    //if tmpRst = CBSuccesed then
     begin
       tmpRst := tmpRst + curWindow.Show;
     end;

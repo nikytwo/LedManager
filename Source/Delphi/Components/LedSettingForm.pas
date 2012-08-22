@@ -15,16 +15,6 @@ type
     cnbtnDelScreen: TCnBitBtn;
     lstScreens: TListBox;
     alblScreenTitle: TCnAALabel;
-    grpHardSetting: TGroupBox;
-    rbRs: TRadioButton;
-    lbl1: TLabel;
-    cbbPort: TComboBox;
-    lbl2: TLabel;
-    cbbBaudrate: TComboBox;
-    rbNet: TRadioButton;
-    lbl4: TLabel;
-    lbl5: TLabel;
-    edtIPPort: TEdit;
     grpParaSetting: TGroupBox;
     lblWidth: TLabel;
     lblHeight: TLabel;
@@ -53,43 +43,21 @@ type
     cnbtnCancel: TCnBitBtn;
     alblTextSource: TCnAALabel;
     edtTextSource: TEdit;
-    edtIP: TEdit;
-    cnpnlCPPanel: TCnPanel;
-    albl1: TCnAALabel;
-    grp1: TGroupBox;
+    grpHardSetting: TGroupBox;
     lbl3: TLabel;
     lbl6: TLabel;
     lbl7: TLabel;
+    cbbTransMode: TComboBox;
+    cbbCardType: TComboBox;
+    grpNet: TGroupBox;
     lbl8: TLabel;
-    rb1: TRadioButton;
-    cbb1: TComboBox;
-    cbb2: TComboBox;
-    rb2: TRadioButton;
-    edt1: TEdit;
-    edt2: TEdit;
-    grp2: TGroupBox;
+    edtIP: TEdit;
+    grpCom: TGroupBox;
     lbl9: TLabel;
     lbl10: TLabel;
-    se1: TCnSpinEdit;
-    se2: TCnSpinEdit;
-    grp3: TGroupBox;
-    lbl13: TLabel;
-    lbl14: TLabel;
-    lbl15: TLabel;
-    lbl16: TLabel;
-    lbl17: TLabel;
-    lbl18: TLabel;
-    cbb5: TComboBox;
-    cbb6: TComboBox;
-    cbb7: TComboBox;
-    se3: TCnSpinEdit;
-    se4: TCnSpinEdit;
-    cbb8: TComboBox;
-    mmo1: TMemo;
-    cnbtnAddScreen1: TCnBitBtn;
-    cnbtnAddScreen2: TCnBitBtn;
-    cnbtnAddScreen3: TCnBitBtn;
-    edt3: TEdit;
+    cbbComNO: TComboBox;
+    cbbBaudrate: TComboBox;
+    edtScreenID: TEdit;
     procedure rbClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cnbtnAddScreenClick(Sender: TObject);
@@ -109,7 +77,7 @@ type
     procedure SaveSetting;
     procedure SaveDefSetting;
     function GetCurScreen: TLedScreen;
-    procedure EnableCtrl;
+    procedure ShowCtrl;
     procedure StartChangeOrSave;
     procedure endChangeOrSave;
     procedure RefreshListBox;
@@ -168,7 +136,6 @@ begin
   begin
     SetObjectToCtrl(curScreen);
   end;
-  EnableCtrl;
 
   endChangeOrSave;
 end;
@@ -176,7 +143,7 @@ end;
 procedure TFormSetting.rbClick(Sender: TObject);
 begin     
   SetCtrlToObject;
-  EnableCtrl;
+  
 end;
 
 procedure TFormSetting.FormShow(Sender: TObject);
@@ -185,7 +152,7 @@ begin
   LoadSetting;
 
   RefreshListBox;
-  EnableCtrl;
+  
 
   endChangeOrSave;
 end;       
@@ -213,7 +180,7 @@ begin
 
   AddLSNScreen;
   RefreshListBox;
-  EnableCtrl;
+  
 
   endChangeOrSave;
 end;
@@ -224,7 +191,7 @@ begin
 
   DelScreen(lstScreens.Count - 1);
   RefreshListBox;
-  EnableCtrl;
+
 
   endChangeOrSave;
 end;
@@ -366,15 +333,6 @@ begin
   begin
     SetObjectToCtrl(curScreen);
   end;
-end;        
-
-procedure TFormSetting.EnableCtrl;
-begin
-  edtIPPort.Enabled := not rbRs.Checked;
-  edtIP.Enabled := not rbRs.Checked;
-  cbbPort.Enabled := rbRs.Checked;
-  cbbBaudrate.Enabled := rbRs.Checked;
-  cnbtnDelScreen.Enabled := (lstScreens.Count > 0);
 end;
 
 procedure TFormSetting.SetObjectToCtrl(AScreen: TLedScreen);
@@ -432,6 +390,12 @@ begin
   seRunSpeed.Value := lsnScreen.Windows[0].RunSpeed;
   seStayTime.Value := lsnScreen.Windows[0].StayTime;
   edtTextSource.Text := lsnScreen.Windows[0].TextSource;
+end;
+
+procedure TFormSetting.ShowCtrl;
+begin
+  grpNet.Visible := (cbbTransMode.ItemIndex = 0);
+  grpCom.Visible := (cbbTransMode.ItemIndex > 0);
 end;
 
 procedure TFormSetting.SetCtrlToObject;

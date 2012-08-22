@@ -10,7 +10,7 @@ uses
          
 const
   DefaultHParent = 0;
-  LSNScreenType = 'LSN';
+  LSNScreenType = 'Listen';
 
 type
 { TLSNScreen }
@@ -24,6 +24,8 @@ type
     FTemperatureON: Boolean;
     FModeStyle: Integer;
     FTitleStyle: Integer;
+    FCardType: Integer;
+    FTransMode: Integer;
     procedure SetColorStyle(const Value: Integer);
     procedure SetMainON(const Value: Boolean);
     procedure SetModeStyle(const Value: Integer);
@@ -31,6 +33,7 @@ type
     procedure SetTimerON(const Value: Boolean);
     procedure SetTitleON(const Value: Boolean);
     procedure SetTitleStyle(const Value: Integer);
+    procedure SetCardType(const Value: Integer);
 
   protected
 
@@ -40,9 +43,11 @@ type
                                   
     function InitComm: Integer; override;
     function FreeComm: Integer; override;
-    function SaveTo: TStrings; override;  
+    function SaveTo: TStrings; override;
     class function LoadFrom(AKVList: TStrings): TLSNScreen;
 
+    property TransMode: Integer read FTransMode write FTransMode;
+    property CardType: Integer read FCardType write SetCardType;
     property ColorStyle: Integer read FColorStyle write SetColorStyle;
     property ModeStyle: Integer read FModeStyle write SetModeStyle;
     property TimerON: Boolean read FTimerON write SetTimerON;
@@ -61,7 +66,9 @@ implementation
 constructor TLSNScreen.Create;
 begin     
   inherited Create;
-  ScreenType := 'LSN';
+  ScreenType := LSNScreenType;
+  FTransMode := 1;
+  FCardType := 3;
   FColorStyle := 2;
   FModeStyle := 1;
   FTimerON := False;
@@ -79,42 +86,26 @@ end;
 
 function TLSNScreen.FreeComm: Integer;
 begin
-  if DeleteComm then
-  begin
-    Result := 0;
-  end
-  else
-  begin
-    Result := 100000;
-  end; 
+
 end;
 
 function TLSNScreen.InitComm: Integer;
 begin
-  //创建串口通讯实例
-  if CreateComm then
+  //设置通讯方式
+  Result := 1 - SetTransMode(TransMode, CardType);
+
+  //设置通讯参数
+  if TransMode = 1 then
   begin
-    Result := 0;
+    Result := Result + (1 - SetNetworkPara(ID, PChar(IP))) * 10;
   end
   else
-  begin
-    Result := 1;
-    Exit;
+  begin  
+    Result := Result + (1 - SetSerialportPara(ID, ComNO, Baudrate)) * 10;
   end;
 
   //设置显示屏参数
-  SetScreenPara(ID, ColorStyle, Width, Heigth, ModeStyle, TimerON,
-    TemperatureON, MainON, TitleON, TitleStyle);
-
-  //同步发送方式下发送屏参数到下位机
-  if not IsSendByNet then
-  begin
-    Result := Result + (1 - SendScreenPara(ComNo, Baudrate, DefaultHParent)) * 10;
-  end
-  else
-  begin
-    Result := Result + (1 - SendScreenPara_UDP(PChar(IP), Port, DefaultHParent)) * 10;
-  end;
+  Result := Result + (SendScreenPara(ID, ColorStyle, Width, Heigth) - 1) * 100;
 end;
 
 class function TLSNScreen.LoadFrom(AKVList: TStrings): TLSNScreen;
@@ -159,6 +150,11 @@ begin
   Result.Add('MainON=' + BoolToStr(MainON));
   Result.Add('TitleON=' + BoolToStr(TitleON));
   Result.Add('TitleStyle=' + IntToStr(TitleStyle));
+end;
+
+procedure TLSNScreen.SetCardType(const Value: Integer);
+begin
+  FCardType := Value;
 end;
 
 procedure TLSNScreen.SetColorStyle(const Value: Integer);
