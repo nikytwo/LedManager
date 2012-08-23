@@ -32,7 +32,7 @@ type
 
     function InitComm: Integer; override;
     function FreeComm: Integer; override;
-    function SaveTo: TStrings; override;   
+    function SaveTo: TStrings; override;
     class function LoadFrom(AKVList: TStrings): TCPScreen;
 
     property Timeout: Integer read FTimeout write SetTimeout;
@@ -88,16 +88,16 @@ class function TCPScreen.LoadFrom(AKVList: TStrings): TCPScreen;
 begin
   Result := nil;
   Result := TCPScreen.Create;
-  Result.ID := StrToInt(AKVList.Values['ID']);
-  Result.Width := StrToInt(AKVList.Values['Width']);
-  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
-  Result.IsSendByNet := StrToBool(AKVList.Values['IsSendByNet']);
+  Result.ID := StrToIntDef(AKVList.Values['ID'], 1);
+  Result.Width := StrToIntDef(AKVList.Values['Width'], 128);
+  Result.Heigth := StrToIntDef(AKVList.Values['Heigth'], 64);
+  Result.IsSendByNet := StrToBoolDef(AKVList.Values['IsSendByNet'], True);
   Result.IP := AKVList.Values['IP'];
-  Result.Port := StrToInt(AKVList.Values['Port']);
-  Result.IDCode := StrToInt(AKVList.Values['IDCode']);
-  Result.ComNO := StrToInt(AKVList.Values['ComNO']);
-  Result.Baudrate := StrToInt(AKVList.Values['Baudrate']);
-  Result.Timeout := StrToInt(AKVList.Values['Timeout']);
+  Result.Port := StrToIntDef(AKVList.Values['Port'], 1024);
+  Result.IDCode := StrToIntDef(AKVList.Values['IDCode'], -1);
+  Result.ComNO := StrToIntDef(AKVList.Values['ComNO'], 1);
+  Result.Baudrate := StrToIntDef(AKVList.Values['Baudrate'], 115200);
+  Result.Timeout := StrToIntDef(AKVList.Values['Timeout'], 600);
 end;
 
 function TCPScreen.GetIP(AIP: string): Integer;

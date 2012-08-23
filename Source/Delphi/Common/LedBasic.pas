@@ -173,7 +173,7 @@ type
 
 implementation
 
-uses LSNScreen, LSNWindow, CPScreen, CPWindow;
+uses LSNWindow, LSNScreen, CPScreen, CPWindow;
 
 { TLedScreen }
 
@@ -298,7 +298,6 @@ end;
 function TLedScreen.ShowText(WindowID: Integer; AText: string): Integer;
 var
   curWindow: TLedWindow;
-  tmpRst: Integer;
 begin
   Result := 0;
   curWindow := Windows[WindowID - 1];
@@ -309,17 +308,16 @@ begin
   curWindow.Text := AText;
            
   try
-    tmpRst := InitComm;
-    //if tmpRst = CBSuccesed then
-    begin
-      tmpRst := tmpRst + curWindow.Show;
-    end;
-    Result := tmpRst;
-    if tmpRst <> 0 then
+    Result := InitComm;
+    //if Result = CBSuccesed then
+    //begin
+      Result := Result + curWindow.Show;
+    //end;
+    if Result <> 0 then
     begin
       curWindow.Text := '';
     end;
-    Sleep(2000);
+    //Sleep(2000);
   finally
     FreeComm;
   end;
@@ -338,7 +336,7 @@ begin
   FFontSize := 12;
   FColor := 1;
   FEffect := 2;
-  FRunSpeed := 4;
+  FRunSpeed := 10;
   FStayTime := 0;
   FAlignment := 1;
 end;
@@ -579,7 +577,7 @@ begin
   begin
     aKVList := AIniOptions.Screens[i];   
     aScreenType := aKVList.Values['ScreenType'];
-    if aScreenType = 'LSN' then
+    if aScreenType = LSNScreenType then
     begin
       AddScreen(TLSNScreen.LoadFrom(aKVList));
     end
@@ -595,7 +593,7 @@ begin
     aScreenID := StrToInt(aKVList.Values['ScreenID']);
     aScreenType := aKVList.Values['ScreenType'];
     aScreen := GetScreenBy(aScreenType, aScreenID);
-    if aScreenType = 'LSN' then
+    if aScreenType = LSNScreenType then
     begin
       aScreen.AddWindow(TLSNWindow.LoadFrom(aKVList));
     end

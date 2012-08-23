@@ -3,7 +3,7 @@ object FormSetting: TFormSetting
   Top = 259
   BorderStyle = bsDialog
   Caption = #35774#32622
-  ClientHeight = 502
+  ClientHeight = 381
   ClientWidth = 599
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,14 +21,13 @@ object FormSetting: TFormSetting
     Left = 0
     Top = 0
     Width = 151
-    Height = 502
+    Height = 381
     Align = alClient
     Ctl3D = False
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
     Transparent = False
-    ExplicitWidth = 187
     object alblScreenTitle: TCnAALabel
       Left = 8
       Top = 8
@@ -44,7 +43,7 @@ object FormSetting: TFormSetting
     end
     object cnbtnAddScreen: TCnBitBtn
       Left = 8
-      Top = 304
+      Top = 348
       Width = 57
       Height = 25
       Caption = #28155#21152
@@ -60,7 +59,7 @@ object FormSetting: TFormSetting
     end
     object cnbtnDelScreen: TCnBitBtn
       Left = 80
-      Top = 304
+      Top = 348
       Width = 57
       Height = 25
       Caption = #21024#38500
@@ -78,7 +77,7 @@ object FormSetting: TFormSetting
       Left = 8
       Top = 32
       Width = 129
-      Height = 265
+      Height = 310
       ItemHeight = 13
       Items.Strings = (
         'LSN1')
@@ -90,7 +89,7 @@ object FormSetting: TFormSetting
     Left = 151
     Top = 0
     Width = 448
-    Height = 502
+    Height = 381
     Align = alRight
     Ctl3D = False
     Enabled = False
@@ -99,10 +98,9 @@ object FormSetting: TFormSetting
     TabOrder = 1
     Visible = False
     Transparent = False
-    ExplicitLeft = 184
     object alblTextSource: TCnAALabel
       Left = 6
-      Top = 368
+      Top = 354
       Width = 94
       Height = 13
       ParentEffect.ParentFont = False
@@ -154,8 +152,8 @@ object FormSetting: TFormSetting
         Caption = #27169#22359#31867#22411
       end
       object seWidth: TCnSpinEdit
-        Left = 66
-        Top = 16
+        Left = 72
+        Top = 17
         Width = 65
         Height = 22
         EditorEnabled = False
@@ -427,7 +425,7 @@ object FormSetting: TFormSetting
     end
     object cnbtnSave: TCnBitBtn
       Left = 270
-      Top = 362
+      Top = 348
       Width = 57
       Height = 25
       Caption = #20445#23384
@@ -443,7 +441,7 @@ object FormSetting: TFormSetting
     end
     object cnbtnCancel: TCnBitBtn
       Left = 342
-      Top = 362
+      Top = 348
       Width = 57
       Height = 25
       Caption = #21462#28040
@@ -460,7 +458,7 @@ object FormSetting: TFormSetting
     object edtTextSource: TEdit
       Tag = 1
       Left = 102
-      Top = 365
+      Top = 351
       Width = 88
       Height = 19
       Hint = #35813#26174#31034#23631#26174#31034#30340#20869#23481#26469#28304#12290#22914#33509#35813#26174#31034#23631#29992#26469#26174#31034#24037#20316#31449'001'#30340#20869#23481#65292#21017#36755#20837#24037#20316#31449'001'#30340#35782#21035#21495#12290
@@ -486,20 +484,23 @@ object FormSetting: TFormSetting
         Top = 27
         Width = 60
         Height = 13
+        AutoSize = False
         Caption = #36890#35759#27169#24335#65306
       end
       object lbl6: TLabel
-        Left = 10
+        Left = 8
         Top = 59
-        Width = 72
+        Width = 74
         Height = 13
+        AutoSize = False
         Caption = #25511#21046#22120#31867#22411#65306
       end
       object lbl7: TLabel
-        Left = 46
+        Left = 49
         Top = 87
         Width = 36
         Height = 13
+        AutoSize = False
         Caption = #23631#21495#65306
       end
       object cbbTransMode: TComboBox
@@ -512,6 +513,7 @@ object FormSetting: TFormSetting
         ItemIndex = 0
         TabOrder = 0
         Text = #32593#32476#27169#24335
+        OnChange = CtrlChange
         Items.Strings = (
           #32593#32476#27169#24335
           #20018#21475#27169#24335)
@@ -526,6 +528,7 @@ object FormSetting: TFormSetting
         ItemIndex = 0
         TabOrder = 1
         Text = 'N1,N2,L1'
+        OnChange = CtrlChange
         Items.Strings = (
           'N1,N2,L1'
           'N3'
@@ -543,16 +546,54 @@ object FormSetting: TFormSetting
           Top = 24
           Width = 46
           Height = 13
+          AutoSize = False
           Caption = 'IP'#22320#22336#65306
         end
-        object edtIP: TEdit
+        object lblIDCode: TLabel
           Left = 24
-          Top = 48
-          Width = 169
+          Top = 70
+          Width = 46
+          Height = 13
+          AutoSize = False
+          Caption = #35782#21035#30721#65306
+        end
+        object lblIPPort: TLabel
+          Left = 6
+          Top = 46
+          Width = 65
+          Height = 13
+          AutoSize = False
+          Caption = #31471#21475#22320#22336#65306
+        end
+        object edtIP: TEdit
+          Left = 76
+          Top = 21
+          Width = 89
           Height = 19
           MaxLength = 15
           TabOrder = 0
           Text = '192.168.1.99'
+          OnChange = CtrlChange
+        end
+        object edtIDCode: TEdit
+          Left = 76
+          Top = 67
+          Width = 89
+          Height = 19
+          MaxLength = 15
+          TabOrder = 1
+          Text = '-1'
+          OnChange = CtrlChange
+        end
+        object edtIPPort: TEdit
+          Left = 76
+          Top = 44
+          Width = 89
+          Height = 19
+          MaxLength = 15
+          TabOrder = 2
+          Text = '1024'
+          OnChange = CtrlChange
         end
       end
       object grpCom: TGroupBox
@@ -564,18 +605,20 @@ object FormSetting: TFormSetting
         TabOrder = 3
         Visible = False
         object lbl9: TLabel
-          Left = 24
-          Top = 24
+          Left = 30
+          Top = 20
           Width = 36
           Height = 13
+          AutoSize = False
           Caption = #20018#21475#65306
         end
         object lbl10: TLabel
-          Left = 24
-          Top = 48
-          Width = 33
+          Left = 16
+          Top = 51
+          Width = 48
           Height = 13
-          Caption = 'BPS'#65306
+          AutoSize = False
+          Caption = #27874#29305#29575#65306
         end
         object cbbComNO: TComboBox
           Left = 72
@@ -587,6 +630,7 @@ object FormSetting: TFormSetting
           ItemIndex = 0
           TabOrder = 0
           Text = 'COM1'
+          OnChange = CtrlChange
           Items.Strings = (
             'COM1'
             'COM2'
@@ -599,7 +643,7 @@ object FormSetting: TFormSetting
         end
         object cbbBaudrate: TComboBox
           Left = 72
-          Top = 48
+          Top = 47
           Width = 97
           Height = 22
           Style = csOwnerDrawFixed
@@ -607,6 +651,7 @@ object FormSetting: TFormSetting
           ItemIndex = 0
           TabOrder = 1
           Text = '9600'
+          OnChange = CtrlChange
           Items.Strings = (
             '9600'
             '38400'
@@ -621,6 +666,7 @@ object FormSetting: TFormSetting
         Height = 19
         TabOrder = 4
         Text = '1'
+        OnChange = CtrlChange
       end
     end
   end

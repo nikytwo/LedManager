@@ -58,7 +58,10 @@ type
     cbbComNO: TComboBox;
     cbbBaudrate: TComboBox;
     edtScreenID: TEdit;
-    procedure rbClick(Sender: TObject);
+    lblIDCode: TLabel;
+    edtIDCode: TEdit;
+    lblIPPort: TLabel;
+    edtIPPort: TEdit;
     procedure FormShow(Sender: TObject);
     procedure cnbtnAddScreenClick(Sender: TObject);
     procedure cnbtnDelScreenClick(Sender: TObject);
@@ -108,11 +111,13 @@ uses LSNScreen, LSNWindow, LedIniOptions, CPScreen, CPWindow;
 procedure TFormSetting.CtrlChange(Sender: TObject);
 begin   
   SetCtrlToObject;
+  ShowCtrl;
 end;        
 
 procedure TFormSetting.cnbtnTestClick(Sender: TObject);
 var
   curScreen: TLedScreen;
+  rst: Integer;
 begin
   curScreen := GetCurScreen;
   if curScreen = nil then
@@ -122,7 +127,8 @@ begin
 
   { DONE : 临时应用参数信息来测试 }
 
-  LedManager.SendTextTo(curScreen.ScreenType, curScreen.ID, 1, mmoText.Text);
+  rst := LedManager.SendTextTo(curScreen.ScreenType, curScreen.ID, 1, mmoText.Text);
+  Application.MessageBox(PChar(IntToStr(rst)), '提示', MB_OK);
 end;
 
 procedure TFormSetting.lstScreensClick(Sender: TObject);
@@ -136,14 +142,9 @@ begin
   begin
     SetObjectToCtrl(curScreen);
   end;
+  ShowCtrl;
 
   endChangeOrSave;
-end;
-
-procedure TFormSetting.rbClick(Sender: TObject);
-begin     
-  SetCtrlToObject;
-  
 end;
 
 procedure TFormSetting.FormShow(Sender: TObject);
@@ -152,7 +153,6 @@ begin
   LoadSetting;
 
   RefreshListBox;
-  
 
   endChangeOrSave;
 end;       
@@ -333,63 +333,72 @@ begin
   begin
     SetObjectToCtrl(curScreen);
   end;
+  ShowCtrl;
 end;
 
 procedure TFormSetting.SetObjectToCtrl(AScreen: TLedScreen);
 var
   i: Integer;
-  lsnScreen: TLSNScreen;
 begin
   if AScreen = nil then
   begin
     Exit;
-  end;   
-  { TODO : 根据控制卡类型进行保存 }
-  if curScreen.ScreenType = CPScreenType then
-  begin
-    SetCPInfo2Ctrl(curScreen);
-  end
-  else
-  begin
-    SetLSNInfo2Ctrl
   end;
 
-  lsnScreen := AScreen as TLSNScreen;
-  grpHardSetting.Caption := IntToStr(lsnScreen.ID) + '号显示屏硬件设置';
-  seWidth.Value := lsnScreen.Width;
-  seHeight.Value := lsnScreen.Heigth;
-  rbRs.Checked := not lsnScreen.IsSendByNet;
-  rbNet.Checked := lsnScreen.IsSendByNet;
-  edtIP.Text := lsnScreen.IP;
-  edtIPPort.Text := IntToStr(lsnScreen.Port);
-  if (0 < lsnScreen.ComNO) and (lsnScreen.ComNO <= 16) then
+  grpHardSetting.Caption := AScreen.ScreenType + '系列' + IntToStr(AScreen.ID) + '号显示屏硬件设置';
+  edtScreenID.Text := IntToStr(AScreen.ID);
+  seWidth.Value := AScreen.Width;
+  seHeight.Value := AScreen.Heigth;
+  edtIP.Text := AScreen.IP;
+  edtIPPort.Text := IntToStr(AScreen.Port);
+  edtIDCode.Text := IntToStr(AScreen.IDCode);
+  if (0 < AScreen.ComNO) and (AScreen.ComNO <= 16) then
   begin
-    cbbPort.ItemIndex := lsnScreen.ComNO - 1;
+    cbbComNO.ItemIndex := AScreen.ComNO - 1;
   end;
   for i := 0 to cbbBaudrate.Items.Count - 1 do
   begin
-    if lsnScreen.Baudrate = StrToInt(cbbBaudrate.Items[i]) then
+    if AScreen.Baudrate = StrToInt(cbbBaudrate.Items[i]) then
     begin
       cbbBaudrate.ItemIndex := i;
       Break;
     end;
   end;
-  cbbColorStyle.ItemIndex := lsnScreen.ColorStyle - 1;
-  cbbModeStyle.ItemIndex := lsnScreen.ModeStyle - 1;
-  cbbFontName.Text := lsnScreen.Windows[0].FontName;
+  cbbFontName.Text := AScreen.Windows[0].FontName;
   for i := 0 to cbbFontSize.Items.Count - 1 do
   begin
-    if lsnScreen.Windows[0].FontSize = StrToInt(cbbFontSize.Items[i]) then
+    if AScreen.Windows[0].FontSize = StrToInt(cbbFontSize.Items[i]) then
     begin
       cbbFontSize.ItemIndex := i;
       Break;
     end;
   end;
-  cbbFontColor.ItemIndex := lsnScreen.Windows[0].Color - 1;
-  cbbEffect.ItemIndex := lsnScreen.Windows[0].Effect;
-  seRunSpeed.Value := lsnScreen.Windows[0].RunSpeed;
-  seStayTime.Value := lsnScreen.Windows[0].StayTime;
-  edtTextSource.Text := lsnScreen.Windows[0].TextSource;
+  if 65535 = AScreen.Windows[0].Color then
+  begin
+    cbbFontColor.ItemIndex := 1;
+  end
+  else if 65280 = AScreen.Windows[0].Color then
+  begin
+    cbbFontColor.ItemIndex := 2;
+  end
+  else
+  begin
+    cbbFontColor.ItemIndex := 0;
+  end;
+
+  cbbEffect.ItemIndex := AScreen.Windows[0].Effect;
+  seRunSpeed.Value := AScreen.Windows[0].RunSpeed;
+  seStayTime.Value := AScreen.Windows[0].StayTime;
+  edtTextSource.Text := AScreen.Windows[0].TextSource;
+
+  { DONE : 根据控制卡类型进行保存 }
+  if AScreen.ScreenType = LSNScreenType then
+  begin
+    cbbTransMode.ItemIndex := (AScreen as TLSNScreen).TransMode - 1;
+    cbbCardType.ItemIndex := (AScreen as TLSNScreen).CardType - 1;
+    cbbColorStyle.ItemIndex := (AScreen as TLSNScreen).ColorStyle - 1;
+    cbbModeStyle.ItemIndex := (AScreen as TLSNScreen).ModeStyle - 1;
+  end;
 end;
 
 procedure TFormSetting.ShowCtrl;
@@ -400,33 +409,52 @@ end;
 
 procedure TFormSetting.SetCtrlToObject;
 var
+  aScreen: TLedScreen;
   lsnScreen: TLSNScreen;
 begin
   if not Self.Enabled then
   begin
     Exit;
   end;
-  lsnScreen := GetCurScreen as TLSNScreen;
-  if lsnScreen = nil then
+  aScreen := GetCurScreen;
+  if aScreen = nil then
   begin
     Exit;
   end;
-  lsnScreen.Width := seWidth.Value;
-  lsnScreen.Heigth := seHeight.Value;
-  lsnScreen.IsSendByNet := not rbRs.Checked;
-  lsnScreen.IP := edtIP.Text;
-  lsnScreen.Port := StrToInt(edtIPPort.Text);
-  lsnScreen.ComNO := cbbPort.ItemIndex + 1;
-  lsnScreen.Baudrate := StrToInt(cbbBaudrate.Text);
-  lsnScreen.ColorStyle := cbbColorStyle.ItemIndex + 1;
-  lsnScreen.ModeStyle := cbbModeStyle.ItemIndex + 1;
-  lsnScreen.Windows[0].FontName := cbbFontName.Text;
-  lsnScreen.Windows[0].FontSize := StrToInt(cbbFontSize.Text);
-  lsnScreen.Windows[0].Color := cbbFontColor.ItemIndex + 1;
-  lsnScreen.Windows[0].Effect := cbbEffect.ItemIndex;
-  lsnScreen.Windows[0].RunSpeed := seRunSpeed.Value;
-  lsnScreen.Windows[0].StayTime := seStayTime.Value;
-  lsnScreen.Windows[0].TextSource := edtTextSource.Text;
+  aScreen.Width := seWidth.Value;
+  aScreen.Heigth := seHeight.Value;
+  aScreen.IsSendByNet := (cbbTransMode.ItemIndex = 0);
+  aScreen.IP := edtIP.Text;
+  aScreen.Port := StrToInt(edtIPPort.Text);
+  aScreen.ComNO := cbbComNO.ItemIndex + 1;
+  aScreen.Baudrate := StrToInt(cbbBaudrate.Text);
+  aScreen.Windows[0].FontName := cbbFontName.Text;
+  aScreen.Windows[0].FontSize := StrToInt(cbbFontSize.Text);
+  aScreen.Windows[0].Color := cbbFontColor.ItemIndex + 1;
+  if 1 = cbbFontColor.ItemIndex then
+  begin
+    aScreen.Windows[0].Color := 65535;
+  end
+  else if 2 = cbbFontColor.ItemIndex then
+  begin
+    aScreen.Windows[0].Color := 65280;
+  end
+  else
+  begin
+    aScreen.Windows[0].Color := 255;
+  end;
+  aScreen.Windows[0].Effect := cbbEffect.ItemIndex;
+  aScreen.Windows[0].RunSpeed := seRunSpeed.Value;
+  aScreen.Windows[0].StayTime := seStayTime.Value;
+  aScreen.Windows[0].TextSource := edtTextSource.Text;
+  { DONE : 根据控制卡类型进行保存 }
+  if AScreen.ScreenType = LSNScreenType then
+  begin
+    (aScreen as TLSNScreen).TransMode := cbbTransMode.ItemIndex + 1;
+    (aScreen as TLSNScreen).CardType := cbbCardType.ItemIndex + 1;
+    (aScreen as TLSNScreen).ColorStyle := cbbColorStyle.ItemIndex + 1;
+    (aScreen as TLSNScreen).ModeStyle := cbbModeStyle.ItemIndex + 1;
+  end;
 end;
 
 procedure TFormSetting.ListBoxSelectFirst;

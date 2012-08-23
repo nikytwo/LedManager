@@ -10,7 +10,7 @@ uses
          
 const
   DefaultHParent = 0;
-  LSNScreenType = 'Listen';
+  LSNScreenType = 'LSN';
 
 type
 { TLSNScreen }
@@ -112,22 +112,24 @@ class function TLSNScreen.LoadFrom(AKVList: TStrings): TLSNScreen;
 begin
   Result := nil;
   Result := TLSNScreen.Create;
-  Result.ID := StrToInt(AKVList.Values['ID']);
-  Result.Width := StrToInt(AKVList.Values['Width']);
-  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
-  Result.IsSendByNet := StrToBool(AKVList.Values['IsSendByNet']);
+  Result.ID := StrToIntDef(AKVList.Values['ID'], 1);
+  Result.Width := StrToIntDef(AKVList.Values['Width'], 128);
+  Result.Heigth := StrToIntDef(AKVList.Values['Heigth'], 64);
+  Result.IsSendByNet := StrToBoolDef(AKVList.Values['IsSendByNet'], True);
   Result.IP := AKVList.Values['IP'];
-  Result.Port := StrToInt(AKVList.Values['Port']);
-  Result.IDCode := StrToInt(AKVList.Values['IDCode']);
-  Result.ComNO := StrToInt(AKVList.Values['ComNO']);
-  Result.Baudrate := StrToInt(AKVList.Values['Baudrate']);
-  Result.ColorStyle := StrToInt(AKVList.Values['ColorStyle']);
-  Result.ModeStyle := StrToInt(AKVList.Values['ModeStyle']);
-  Result.TimerON := StrToBool(AKVList.Values['TimerON']);
-  Result.TemperatureON := StrToBool(AKVList.Values['TemperatureON']);
-  Result.MainON := StrToBool(AKVList.Values['MainON']);
-  Result.TitleON := StrToBool(AKVList.Values['TitleON']);
-  Result.TitleStyle := StrToInt(AKVList.Values['TitleStyle']);
+  Result.Port := StrToIntDef(AKVList.Values['Port'], 1024);
+  Result.IDCode := StrToIntDef(AKVList.Values['IDCode'], -1);
+  Result.ComNO := StrToIntDef(AKVList.Values['ComNO'], 1);
+  Result.Baudrate := StrToIntDef(AKVList.Values['Baudrate'], 115200);
+  Result.TransMode := StrToIntDef(AKVList.Values['TransMode'], 1);
+  Result.CardType := StrToIntDef(AKVList.Values['CardType'], 3);
+  Result.ColorStyle := StrToIntDef(AKVList.Values['ColorStyle'], 1);
+  Result.ModeStyle := StrToIntDef(AKVList.Values['ModeStyle'], 1);
+  Result.TimerON := StrToBoolDef(AKVList.Values['TimerON'], False);
+  Result.TemperatureON := StrToBoolDef(AKVList.Values['TemperatureON'], False);
+  Result.MainON := StrToBoolDef(AKVList.Values['MainON'], True);
+  Result.TitleON := StrToBoolDef(AKVList.Values['TitleON'], False);
+  Result.TitleStyle := StrToIntDef(AKVList.Values['TitleStyle'], 1);
 end;
 
 function TLSNScreen.SaveTo: TStrings;
@@ -143,6 +145,8 @@ begin
   Result.Add('IDCode=' + IntToStr(IDCode));
   Result.Add('ComNO=' + IntToStr(ComNO));
   Result.Add('Baudrate=' + IntToStr(Baudrate));
+  Result.Add('TransMode=' + IntToStr(TransMode));
+  Result.Add('CardType=' + IntToStr(CardType));
   Result.Add('ColorStyle=' + IntToStr(ColorStyle));
   Result.Add('ModeStyle=' + IntToStr(ModeStyle));
   Result.Add('TimerON=' + BoolToStr(TimerON));

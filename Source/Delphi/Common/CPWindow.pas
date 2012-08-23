@@ -2,7 +2,8 @@ unit CPWindow;
 
 interface
 
-uses  
+uses
+  Windows,
   Classes,
   SysUtils,
   LedBasic,
@@ -48,17 +49,17 @@ class function TCPWindow.LoadFrom(AKVList: TStrings): TLedWindow;
 begin
   Result := TCPWindow.Create;
   Result.TextSource := AKVList.Values['TextSource'];
-  Result.X := StrToInt(AKVList.Values['X']);
-  Result.Y := StrToInt(AKVList.Values['Y']);
-  Result.Width := StrToInt(AKVList.Values['Width']);
-  Result.Heigth := StrToInt(AKVList.Values['Heigth']);
+  Result.X := StrToIntDef(AKVList.Values['X'], 0);
+  Result.Y := StrToIntDef(AKVList.Values['Y'], 0);
+  Result.Width := StrToIntDef(AKVList.Values['Width'], 128);
+  Result.Heigth := StrToIntDef(AKVList.Values['Heigth'], 64);
   Result.FontName := AKVList.Values['FontName'];
-  Result.FontSize := StrToInt(AKVList.Values['FontSize']);
-  Result.Color := StrToInt(AKVList.Values['FontColor']);
-  Result.Effect := StrToInt(AKVList.Values['Effect']);
-  Result.RunSpeed := StrToInt(AKVList.Values['RunSpeed']);
-  Result.StayTime := StrToInt(AKVList.Values['StayTime']);
-  Result.Alignment := StrToInt(AKVList.Values['Alignment']);
+  Result.FontSize := StrToIntDef(AKVList.Values['FontSize'], 12);
+  Result.Color := StrToIntDef(AKVList.Values['FontColor'], RGB(255,0,0));
+  Result.Effect := StrToIntDef(AKVList.Values['Effect'], 0);
+  Result.RunSpeed := StrToIntDef(AKVList.Values['RunSpeed'], 10);
+  Result.StayTime := StrToIntDef(AKVList.Values['StayTime'], 0);
+  Result.Alignment := StrToIntDef(AKVList.Values['Alignment'], 1);
 end;
 
 function TCPWindow.SaveTo: TStrings;
