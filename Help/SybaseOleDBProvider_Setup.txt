@@ -1,0 +1,17 @@
+Sybase Ole DB Provider 安装及使用
+
+SybaseOleDBProvider 要求先安装Sybase Ole DB Provider （Sybase 安装包有，名为OLEDB）。
+安装好后，按照以下进行配置：
+1. 运行 sydaadm.exe（默认路径：C:/sybase/OLEDB）
+2. 执行【File】->【New】->【Data Source】
+3. 打开新建数据源窗体，并在【Data Source Name】中输入数据源的名称，如MySybase
+4. 单击【Set Up Data Source】按钮，打开“Sybase ASE OLE DB Provider SetUp”窗体。并设置一下信息：
+	Description --有关数据源色描述，可不填写
+	Server Name --填写服务器名称或者IP地址
+	Database Name --需要连接的数据库名称
+	Network Protocol --默认为“Winsock”，不用修改
+	Server Port or Name Pipes Address --服务端口号，默认为“5000”，需要与Sybase数据库安装时的一致。
+5. 单击【Test Connect】按钮进行连接测试
+6. 单击“Test Connect”窗体的【确定】按钮后会返回到“Sybase ASE OLE DB Provider SetUp”窗体，之后单击【应用】和【确定】按钮返回到“Sybase Configuration Manager”窗体，此时新添加的数据源就出现在“Sybase OLE DB Objects”树状列表框中，窗体中右窗格显示的是选中的数据源的参数列表。至此 Sybase OLE DB 数据源配置完毕，你可以在默认路径（C:/sybase/OLEDB）中看到一个名为“MySybase.ids”的文件，就是刚刚配置的数据源文件。
+8.最后在程序的“数据源设置”中将“服务器”设置为上面新建的数据源名称(MySybase)。
+

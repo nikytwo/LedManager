@@ -1,0 +1,3 @@
+在 Sybase ASE OLE DB Provider Setup 中，设置 Connection 标签如下：
+Character set = iso_1
+Language = us_english

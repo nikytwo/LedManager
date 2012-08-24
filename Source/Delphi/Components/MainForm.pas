@@ -157,11 +157,12 @@ end;
 
 procedure TFormMain.ShowAllText;
 var
-  i, rst: Integer;
+  i, j, rst: Integer;
   aTextList: TStringList;
   name, value: string;
   curtmpTime: string;
   beginTime: TDateTime;
+  allText: string;
 begin
   if mmo1.Lines.Count > 1000 then
   begin
@@ -183,6 +184,28 @@ begin
       aTextList := FDBTextService.GetTexts;
     end;
     }
+    if i = 0 then
+    begin
+      allText := value;
+    end
+    else
+    begin
+      allText := allText + chr(13) + chr(10) + value;
+    end;
+  end;
+
+  // 显示所有的文本
+  for i := 0 to FLedManager.ScreenCount - 1 do
+  begin
+    for j := 0 to FLedManager.Screens[i].WindowCount - 1 do
+    begin
+      if FLedManager.Screens[i].Windows[j].TextSource = '' then
+      begin
+        rst := FLedManager.Screens[i].ShowText(j + 1, allText);
+        mmo1.Lines.Add(curtmpTime + ': ' + '显示所有：'+ chr(13) + chr(10) + allText);
+        mmo1.Lines.Add('结果: ' + IntToStr(rst));
+      end;
+    end;
   end;
 end;
 

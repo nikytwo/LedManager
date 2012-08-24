@@ -405,6 +405,7 @@ procedure TFormSetting.ShowCtrl;
 begin
   grpNet.Visible := (cbbTransMode.ItemIndex = 0);
   grpCom.Visible := (cbbTransMode.ItemIndex > 0);
+
 end;
 
 procedure TFormSetting.SetCtrlToObject;
@@ -428,6 +429,8 @@ begin
   aScreen.Port := StrToInt(edtIPPort.Text);
   aScreen.ComNO := cbbComNO.ItemIndex + 1;
   aScreen.Baudrate := StrToInt(cbbBaudrate.Text);
+  aScreen.Windows[0].Width := seWidth.Value;
+  aScreen.Windows[0].Heigth := seHeight.Value;
   aScreen.Windows[0].FontName := cbbFontName.Text;
   aScreen.Windows[0].FontSize := StrToInt(cbbFontSize.Text);
   aScreen.Windows[0].Color := cbbFontColor.ItemIndex + 1;
