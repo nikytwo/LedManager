@@ -200,7 +200,7 @@ begin
     LSNDefCardType := Ini.ReadInteger('LSNDefInfo', 'LSNDefCardType', 3);
     LSNDefWidth := Ini.ReadInteger('LSNDefInfo', 'LSNDefWidth', 128);
     LSNDefHeigth := Ini.ReadInteger('LSNDefInfo', 'LSNDefHeigth', 128);
-    LSNDefIsSendByNet := Ini.ReadBool('LSNDefInfo', 'LSNDefIsSendByNet', False);
+    LSNDefIsSendByNet := Ini.ReadBool('LSNDefInfo', 'LSNDefIsSendByNet', True);
     LSNDefIP := Ini.ReadString('LSNDefInfo', 'LSNDefIP', '192.168.128.128');
     LSNDefPort := Ini.ReadInteger('LSNDefInfo', 'LSNDefPort', 1024);
     LSNDefIDCode := Ini.ReadInteger('LSNDefInfo', 'LSNDefIDCode', -1);
@@ -219,7 +219,7 @@ begin
     LSNDefWindowHeigth := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowHeigth', 128);
     LSNDefWindowFontName := Ini.ReadString('LSNDefInfo', 'LSNDefWindowFontName', 'ËÎÌו');
     LSNDefWindowFontSize := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowFontSize', 12);
-    LSNDefWindowFontColor := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowFontColor', 1);
+    LSNDefWindowFontColor := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowFontColor', 255);
     LSNDefWindowEffect := Ini.ReadInteger('LSNDefWindowEffect', 'LSNDefWindowEffect', 2);
     LSNDefWindowRunSpeed := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowRunSpeed', 4);
     LSNDefWindowStayTime := Ini.ReadInteger('LSNDefInfo', 'LSNDefWindowStayTime', 0);

@@ -12,7 +12,7 @@ uses
 
 const
   DefaultTimeOut = 600;
-  CPScreenType = 'CP2500';
+  CPScreenType = 'CP';
 
 type
 { TCPScreen }
@@ -64,12 +64,13 @@ end;
 function TCPScreen.InitComm: Integer;    
 var
   name:AnsiString;  
-  nWndRect: array[0..4] of Integer ;
+  nWndRect: array[0..3] of Integer ;
 begin
+  Result := 0;
   //≥ı ºªØ∆¡≤Œ
   if not IsSendByNet then
   begin
-	  name := Format('COM%d', [Port]);
+	  name := Format('COM%d', [ComNO]);
     CP5200_RS232_InitEx(name, Baudrate, FTimeout);  
     GetSplitWnd(@nWndRect);
     Result := Result
@@ -127,7 +128,7 @@ begin
   PInteger(Integer(pWndRects)+ 0)^ := 0;
   PInteger(Integer(pWndRects)+ 4)^ := 0;
   PInteger(Integer(pWndRects)+ 8)^ :=  Integer(Width);
-  PInteger(Integer(pWndRects)+ 12)^ := Heigth;
+  PInteger(Integer(pWndRects)+ 12)^ := Integer(Heigth);
 end;
 
 function TCPScreen.SaveTo: TStrings;

@@ -648,20 +648,27 @@ end;
 function TLedManager.SendTextTo(AScreenType: string;
   ScreenID, WindowID: Integer; Text: string): Integer;
 var
-  index: Integer;
+  i, index: Integer;
   tmpScreen: TLedScreen;
 begin
-  if ScreenCount > 0 then
+  index := -1;
+  for i := 0 to ScreenCount - 1 do
   begin
-    index := FScreens.IndexOf(AScreenType + IntToStr(ScreenID));
-    tmpScreen := FScreens.Objects[index] as TLedScreen;
-    Result := tmpScreen.ShowText(WindowID, Text);
-  end
-  else
-  begin
+    if (AScreenType = Screens[i].ScreenType) and (ScreenID = Screens[i].ID) then
+    begin
+      index := i;
+      Break;
+    end;
+  end;
+  if (-1 = index) or (ScreenCount <= 0) then
+  begin        
     { TODO -olaijie : 未设置任何显示屏 }
     Result := -11;
+    Exit;
   end;
+  
+  tmpScreen := FScreens.Objects[index] as TLedScreen;
+  Result := tmpScreen.ShowText(WindowID, Text);
 end;
 
 end.

@@ -5,13 +5,12 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, CnAAFont, CnAACtrls, StdCtrls, CnButtons, ExtCtrls, CnPanel,
-  Mask, RzEdit, CnSpin, LedBasic;
+  Mask, RzEdit, CnSpin, LedBasic, Menus, RzButton;
 
 type
   TFormSetting = class(TForm)
     cnpnlLeft: TCnPanel;
     cnpnlLSNPanel: TCnPanel;
-    cnbtnAddScreen: TCnBitBtn;
     cnbtnDelScreen: TCnBitBtn;
     lstScreens: TListBox;
     alblScreenTitle: TCnAALabel;
@@ -30,7 +29,7 @@ type
     cbbFontSize: TComboBox;
     cbbFontName: TComboBox;
     lblEffect: TLabel;
-    cbbEffect: TComboBox;
+    cbbLSEffect: TComboBox;
     lblRunSpeed: TLabel;
     lblStayTime: TLabel;
     seRunSpeed: TCnSpinEdit;
@@ -45,7 +44,7 @@ type
     edtTextSource: TEdit;
     grpHardSetting: TGroupBox;
     lbl3: TLabel;
-    lbl6: TLabel;
+    lblCardType: TLabel;
     lbl7: TLabel;
     cbbTransMode: TComboBox;
     cbbCardType: TComboBox;
@@ -62,8 +61,12 @@ type
     edtIDCode: TEdit;
     lblIPPort: TLabel;
     edtIPPort: TEdit;
+    btnAdd: TRzMenuButton;
+    pmAdd: TPopupMenu;
+    Listen1: TMenuItem;
+    cPower1: TMenuItem;
+    cbbCPEffect: TComboBox;
     procedure FormShow(Sender: TObject);
-    procedure cnbtnAddScreenClick(Sender: TObject);
     procedure cnbtnDelScreenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure cnbtnTestClick(Sender: TObject);
@@ -71,6 +74,8 @@ type
     procedure cnbtnSaveClick(Sender: TObject);
     procedure cnbtnCancelClick(Sender: TObject);
     procedure CtrlChange(Sender: TObject);
+    procedure Listen1Click(Sender: TObject);
+    procedure cPower1Click(Sender: TObject);
   private
     { Private declarations }
     FLedManager: TLedManager;
@@ -131,6 +136,17 @@ begin
   Application.MessageBox(PChar(IntToStr(rst)), '提示', MB_OK);
 end;
 
+procedure TFormSetting.cPower1Click(Sender: TObject);
+begin
+  StartChangeOrSave;
+
+  AddCPScreen;
+  RefreshListBox;
+
+
+  endChangeOrSave;
+end;
+
 procedure TFormSetting.lstScreensClick(Sender: TObject);
 var
   curScreen: TLedScreen;
@@ -172,17 +188,6 @@ procedure TFormSetting.cnbtnCancelClick(Sender: TObject);
 begin
   { 取消配置，返回主界面 }
   Close;
-end;
-
-procedure TFormSetting.cnbtnAddScreenClick(Sender: TObject);
-begin        
-  StartChangeOrSave;
-
-  AddLSNScreen;
-  RefreshListBox;
-  
-
-  endChangeOrSave;
 end;
 
 procedure TFormSetting.cnbtnDelScreenClick(Sender: TObject);
@@ -386,7 +391,6 @@ begin
     cbbFontColor.ItemIndex := 0;
   end;
 
-  cbbEffect.ItemIndex := AScreen.Windows[0].Effect;
   seRunSpeed.Value := AScreen.Windows[0].RunSpeed;
   seStayTime.Value := AScreen.Windows[0].StayTime;
   edtTextSource.Text := AScreen.Windows[0].TextSource;
@@ -397,15 +401,64 @@ begin
     cbbTransMode.ItemIndex := (AScreen as TLSNScreen).TransMode - 1;
     cbbCardType.ItemIndex := (AScreen as TLSNScreen).CardType - 1;
     cbbColorStyle.ItemIndex := (AScreen as TLSNScreen).ColorStyle - 1;
-    cbbModeStyle.ItemIndex := (AScreen as TLSNScreen).ModeStyle - 1;
+    cbbModeStyle.ItemIndex := (AScreen as TLSNScreen).ModeStyle - 1;  
+    cbbLSEffect.ItemIndex := AScreen.Windows[0].Effect;
+  end
+  else
+  begin
+    if AScreen.IsSendByNet then
+    begin
+      cbbTransMode.ItemIndex := 0;
+    end
+    else
+    begin  
+      cbbTransMode.ItemIndex := 1;
+    end;  
+    cbbCPEffect.ItemIndex := AScreen.Windows[0].Effect;
   end;
 end;
 
 procedure TFormSetting.ShowCtrl;
+var
+  curScreen: TLedScreen;
 begin
   grpNet.Visible := (cbbTransMode.ItemIndex = 0);
   grpCom.Visible := (cbbTransMode.ItemIndex > 0);
-
+  curScreen := GetCurScreen; 
+  if curScreen = nil then
+  begin
+    Exit;
+  end;
+  if LSNScreenType = curScreen.ScreenType then
+  begin
+    lblCardType.Visible := True;
+    cbbCardType.Visible := True;
+    lblIPPort.Visible := False;
+    edtIPPort.Visible := False;
+    lblIDCode.Visible := False;
+    edtIDCode.Visible := False;
+    lblColorStyle.Visible := True;
+    cbbColorStyle.Visible := True;
+    lblModeStyle.Visible := True;
+    cbbModeStyle.Visible := True;
+    cbbCPEffect.Visible := False;
+    cbbLSEffect.Visible := True;
+  end
+  else
+  begin  
+    lblCardType.Visible := False;
+    cbbCardType.Visible := False;
+    lblIPPort.Visible := True;
+    edtIPPort.Visible := True;
+    lblIDCode.Visible := True;
+    edtIDCode.Visible := True;
+    lblColorStyle.Visible := False;
+    cbbColorStyle.Visible := False;
+    lblModeStyle.Visible := False;
+    cbbModeStyle.Visible := False;
+    cbbCPEffect.Visible := True;
+    cbbLSEffect.Visible := False;
+  end;
 end;
 
 procedure TFormSetting.SetCtrlToObject;
@@ -422,6 +475,7 @@ begin
   begin
     Exit;
   end;
+  aScreen.ID := StrToInt(edtScreenID.Text);
   aScreen.Width := seWidth.Value;
   aScreen.Heigth := seHeight.Value;
   aScreen.IsSendByNet := (cbbTransMode.ItemIndex = 0);
@@ -446,7 +500,6 @@ begin
   begin
     aScreen.Windows[0].Color := 255;
   end;
-  aScreen.Windows[0].Effect := cbbEffect.ItemIndex;
   aScreen.Windows[0].RunSpeed := seRunSpeed.Value;
   aScreen.Windows[0].StayTime := seStayTime.Value;
   aScreen.Windows[0].TextSource := edtTextSource.Text;
@@ -456,7 +509,12 @@ begin
     (aScreen as TLSNScreen).TransMode := cbbTransMode.ItemIndex + 1;
     (aScreen as TLSNScreen).CardType := cbbCardType.ItemIndex + 1;
     (aScreen as TLSNScreen).ColorStyle := cbbColorStyle.ItemIndex + 1;
-    (aScreen as TLSNScreen).ModeStyle := cbbModeStyle.ItemIndex + 1;
+    (aScreen as TLSNScreen).ModeStyle := cbbModeStyle.ItemIndex + 1;  
+    aScreen.Windows[0].Effect := cbbLSEffect.ItemIndex;
+  end
+  else
+  begin  
+    aScreen.Windows[0].Effect := cbbCPEffect.ItemIndex;
   end;
 end;
 
@@ -474,6 +532,17 @@ begin
   begin
     lstScreens.Selected[lstScreens.Count - 1] := True;
   end;
+end;
+
+procedure TFormSetting.Listen1Click(Sender: TObject);
+begin
+  StartChangeOrSave;
+
+  AddLSNScreen;
+  RefreshListBox;
+
+
+  endChangeOrSave;
 end;
 
 function TFormSetting.GetCurScreen: TLedScreen;
