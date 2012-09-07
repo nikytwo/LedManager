@@ -1,0 +1,13 @@
+Sybase ASE OLE DB Provider驱动下载后，要执行以下方法才能使用
+1、下载Sybase OLE DB驱动并解压，你会发现目录里的DLL文件，复制sydaase.dll和sydaaser.dll到WINDOW/SYSTEM32目录里，并注册
+————额外阅读：DLL文件注册方法详解————–
+注册
+regsvr32 文件路径
+解除注册
+regsvr32 文件路径 /u
+不弹出信息框
+regsvr32 文件路径 /i
+注意：如果DLL文件在SYSTEM32目录里，直接执行regsvr32 文件名即可
+2、增加系统环境变量path到此解压目录
+方法：在我的电脑上右键-点击“属性”-“高级”选项卡-环境变量-系统变量-Path-编辑，这时你会看到里面变量添加的格式，是以分号为间隔的，这时把你解压Sybase OLE DB驱动的路径写进去，并重新启动（这步很重要），就会发现能在本机上连上远程SYBASE数据库了
+
