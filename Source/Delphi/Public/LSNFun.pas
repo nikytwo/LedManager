@@ -103,7 +103,7 @@ function AddModelClockShow(pno:Integer;jno:Integer;qno:Integer;left:Integer;top:
 
 function AddVoiceArea(pno:Integer;jno:Integer;qno:Integer;Voice_Style:Integer;Voice_Type:Integer;Voice_Speed:Integer;Voice_Tone:Integer;Voice_Volume:Integer;Play_Times:Integer;Display_string:PChar):Integer;stdcall;external 'ListenPlayDll.dll';
 
-function AddFileString(pno:Integer;jno:Integer;qno:Integer;mno:Integer;str:PChar;fontname:PChar;fontsize:Integer;fontcolor:Integer;bold:Integer;italic:Integer;underline:Integer;align:Integer;width:Integer;height:Integer;playstyle:Integer;QuitStyle:Integer;playspeed:Integer;delay:Integer;MidText:Integer):Integer;stdcall;external 'ListenPlayDll.dll';
+function AddFileString(pno:Integer;jno:Integer;qno:Integer;mno:Integer;str:PChar;fontname:PChar;fontsize:Integer;fontcolor:Integer;bold:Integer;italic:Integer;underline:Integer;align:Integer;width:Integer;height:Integer;playstyle:Integer;QuitStyle:Integer;playspeed:Integer;delay:Integer;MidText,Mode:Integer):Integer;stdcall;external 'ListenPlayDll.dll';
 
 function AddLnTxtString(pno:Integer;jno:Integer;qno:Integer;left:Integer;top:Integer;width:Integer;height:Integer;str:PChar;fontname:PChar;fontsize:Integer;fontcolor:Integer;bold:Integer;italic:Integer;underline:Integer;PlayStyle:Integer;Playspeed:Integer;times:Integer):Integer;stdcall;external 'ListenPlayDll.dll';
 
