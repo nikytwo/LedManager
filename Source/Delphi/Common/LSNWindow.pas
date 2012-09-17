@@ -136,14 +136,20 @@ begin
   //添加节目
   ProgramInit(sc.ID, sc.ColorStyle, 1, 0);
 
+  //单行文本
+  AddSingleLnTxt(sc.ID, 1, ID, X, Y, Width, Heigth, Color, PChar(FontName),
+    FontSize, 0, 0, 0, PChar(Text), Effect, RunSpeed);
+  //单行文本(以文件形式发送)   有问题的接口
+  //AddLnTxtString(sc.ID, 1, ID, X, Y, Width, Heigth, PChar(Text), PChar(FontName),
+  //  FontSize, Color, 0, 0, 0, Effect, RunSpeed, StayTime);
   //静态文本
-  AddQuitText(sc.ID, 1, ID, X, Y, Width, Heigth, Color, PChar(FontName),
-    FontSize, 0, 0, 0, PChar(Text));
+  //AddQuitText(sc.ID, 1, ID, X, Y, Width, Heigth, Color, PChar(FontName),
+  //  FontSize, 0, 0, 0, PChar(Text));
 
-//  //添加文件区域
+//  //添加文件区域  有问题的接口
 //  AddFileArea(sc.ID, 1, 1, X, Y, Width, Heigth);
 
-//  //添加字符串到图文区域中
+//  //添加字符串到图文区域中    有问题的接口
 //  AddFileString(sc.ID, 1, 1, 1, PChar(Text),
 //    PChar(FontName), FontSize, Self.Color, 0, 0, 0, Alignment, Width,
 //    Heigth, Effect, 255, RunSpeed, StayTime, 1);
